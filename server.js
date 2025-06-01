@@ -2,7 +2,7 @@
 import express from "express"; 
 import cors from "cors";
 import { dbconnection } from "./config/db.config.js";
-import userRoutes from "./user/routes/userRoute.js";
+import userRoutes from "./users/routes/userRoute.js";
 import mongoose from "mongoose";
 mongoose.set("bufferCommands", false);
 mongoose.set("debug", true);
