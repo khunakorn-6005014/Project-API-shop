@@ -9,7 +9,8 @@ export const register = asyncHandler(async (req, res) => {
     try{
         console.log("🔍 Checking if email exists...");
         const { firstName,lastName, email, password, birthDay } = req.body;
-        const verifyEmail = await User.findOne({ email: email })
+        const verifyEmail = await User.findOne({email: email})
+         console.log("🔍 email exists...?",verifyEmail);
         if (verifyEmail) {
             return res.status(403).json({
                 message: "Email already used"
