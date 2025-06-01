@@ -1,4 +1,4 @@
-//?APIproject/config/db.config.js
+//APIproject/config/db.config.js
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 
