@@ -38,13 +38,18 @@ const userSchema = new mongoose.Schema({
   default: false, 
 },
   favoriteList: {
-  type: [String], // Assuming it's a list of favorite listings
-  default: [],
+  type: mongoose.Schema.Types.ObjectId, 
+  ref: "Product", 
+  required: true, 
 },
+  myProduct:{
+  type: mongoose.Schema.Types.ObjectId, 
+  ref: "Product", 
+  required: true, 
+  },
 }, 
 { 
   timestamps: true 
 }); // ✅ Adds createdAt & updatedAt automatically
-
 
 export default mongoose.model("User", userSchema);
