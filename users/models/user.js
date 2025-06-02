@@ -37,16 +37,14 @@ const userSchema = new mongoose.Schema({
   type: Boolean,
   default: false, 
 },
-  favoriteList: {
+  favoriteList: [{ 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: "Product", 
+    default: [] }],
+myProduct: [{ 
   type: mongoose.Schema.Types.ObjectId, 
   ref: "Product", 
-  required: true, 
-},
-  myProduct:{
-  type: mongoose.Schema.Types.ObjectId, 
-  ref: "Product", 
-  required: true, 
-  },
+  default: [] }],
 }, 
 { 
   timestamps: true 
