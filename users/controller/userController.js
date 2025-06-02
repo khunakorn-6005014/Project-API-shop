@@ -147,7 +147,8 @@ export const getAllusers = asyncHandler(async (req, res) =>{
      const limit = req.query.limit || 100;
     const page = req.query.page || 1;
     const skip = (page - 1) * limit;
-    
+//http://localhost:3000/users/users?page=1&sort=email
+
     try{
        const documents = await User.countDocuments(queryObj);
        
