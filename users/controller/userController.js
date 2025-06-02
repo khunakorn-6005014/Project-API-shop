@@ -56,6 +56,7 @@ export const login = asyncHandler(async (req, res) => {
                 {
                 email: user.email,
                 userId: user.userId,
+                isAdmin: user.isAdmin, // ✅ Add this field
                 },
                 process.env.JWT_SECRET,
                     { expiresIn: "1h" }
