@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import { dbconnection } from "./config/db.config.js";
 import userRoutes from "./users/routes/userRoute.js";
+import productRoutes from "./product/routes/productRoute.js"
 import mongoose from "mongoose";
 mongoose.set("bufferCommands", false);
 mongoose.set("debug", true);
@@ -16,6 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 app.use("/users", userRoutes);
+app.use("/product",productRoutes)
 app.listen(PORT,()=>{
     console.log(`Server is running on http://localhost:${PORT}`);})
 //docker build -t user-service .
