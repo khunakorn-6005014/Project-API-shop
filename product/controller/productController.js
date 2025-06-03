@@ -119,7 +119,7 @@ export const getAllProduct = asyncHandler(async (req, res) => {
     const skip = (page - 1) * limit;
     console.log("Sorting By:", sort);
    console.log("Selected Fields:", selected);
-//http://localhost:3000/product/Products?page=1&sort=email
+//http://localhost:3000/product/Products?page=1&sort=name
     try{
     const userId = req.userData?.userId || "Guest"; // ✅ Allows guests to view
     console.log("User Data in view:", userId);
