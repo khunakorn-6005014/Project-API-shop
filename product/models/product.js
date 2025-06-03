@@ -20,8 +20,9 @@ const ProductSchema = new mongoose.Schema({
         required: true, 
         min: 0 },
     userId: { 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: "User" }, // Links product to seller
+        type: String, 
+        ref: "User" 
+    }, // Links product to seller
 }, { timestamps: true });
 
 export default mongoose.model("Product", ProductSchema);

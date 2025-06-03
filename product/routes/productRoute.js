@@ -1,6 +1,8 @@
+//APIproject/product/routes/productRoutes.js
 import express from "express"
-const router = express.Router();
+import verifyToken from "../../config/auth.middleware.js"
 import { createProduct } from "../controller/productController.js";
 
-router.post("/new-product",createProduct)
+const router = express.Router();
+router.post("/new-product", verifyToken,createProduct)
 export default router;
