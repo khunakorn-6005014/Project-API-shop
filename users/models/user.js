@@ -38,13 +38,15 @@ const userSchema = new mongoose.Schema({
   default: false, 
 },
   favoriteList: [{ 
-    type: mongoose.Schema.Types.ObjectId, 
+    type: String, 
     ref: "Product", 
-    default: [] }],
-myProduct: [{ 
-  type: mongoose.Schema.Types.ObjectId, 
+    default: [] }]
+,
+myProducts: [{ 
+  type: String, 
   ref: "Product", 
-  default: [] }],
+  default: [] }]
+,
 }, 
 { 
   timestamps: true 

@@ -1,6 +1,6 @@
-//flatfinder/config/auth.Middleware.js
+//APIproduct/config/auth.Middleware.js
 import jwt from "jsonwebtoken";
-export default (req, res, next) => {
+const verifyToken =  (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.toLowerCase().startsWith("bearer ")) {
@@ -14,6 +14,7 @@ export default (req, res, next) => {
     console.log("JWT Secret:", process.env.JWT_SECRET);
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.userData = decoded;
+    console.log("Decoded Token in verifyToken:", decoded); 
     next();
   } catch (err) {
     console.error("JWT verification failed:", err);
@@ -21,3 +22,7 @@ export default (req, res, next) => {
     return res.status(401).json({ message, error: err.message });
   }
 };
+
+// ✅ Correctly export the middleware
+export default verifyToken;
+
