@@ -5,7 +5,6 @@ import Product from "../models/product.js"
 import User from "../../users/models/user.js"
 
 export const createProduct = asyncHandler(async (req, res) => {
-console.log("User Data in createProduct:", req.userData); 
     try {
         const { name, price, description, amount } = req.body;
         const userId = req.userData.userId;
@@ -35,4 +34,54 @@ console.log("User Data in createProduct:", req.userData);
         res.status(500).json({ success: false, message: error.message });
     }
 });
+export const updateProduct = asyncHandler(async (req, res) => {
+  try{
+    const { id } = req.params;
+    const userId = req.userData.userId;
+    console.log("User Data in updated:", userId);
+    const product = await Product.findOne({ productId: id });
+        if (!product) {
+            return res.status(404).json({ message: "Product not found." });
+        }
+    // Ensure product owner can only update their own product 
+  if (product.userId !== userId) {
+            return res.status(403).json({ message: "You can only update your own product." });
+        }
+  const updates = req.body;
+  if (!updates || Object.keys(updates).length === 0) {
+    return res.status(400).json({ message: "No update data provided." });
+  }
+  const updatedProduct = await Product.findOneAndUpdate(
+            { productId: id }, updates, { new: true });
+  if (!updatedProduct) {
+    return res.status(404).json({ message: "Product not found or update failed." });
+}
+  res.status(200).json({ success: true, message: "Product updated successfully", product: updatedProduct });
+  }catch(error){
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
 
+export const deletedProduct = asyncHandler(async (req, res) => {
+  try{
+    const { id } = req.params;
+    const userId = req.userData.userId;
+    console.log("User Data in deleted:", userId);
+     const product = await Product.findOne({ productId: id });
+    if (!product) {
+            return res.status(404).json({ message: "Product not found." });}
+     // Ensure product owner can only deleted their own product
+   if (product.userId !== userId) {
+            return res.status(403).json({ message: "You can only delete your own product." });
+        }
+     const deletedProduct = await Product.findOneAndDelete({ productId: id });
+     if (!deletedProduct) {
+    return res.status(404).json({ message: "Product not found or already deleted." });
+     }    
+     // ✅ Remove product from `myProducts`
+    await User.findOneAndUpdate({ userId }, { $pull: { myProducts: id } });
+        res.status(200).json({ success: true, message: "Product deleted successfully.", product : deletedProduct });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+});
