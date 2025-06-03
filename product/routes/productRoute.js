@@ -10,3 +10,9 @@ router.delete("/deleted/:id", verifyToken,deletedProduct)
 router.get("/deteil/:id", viewProductId)
 router.get("/Products", getAllProduct)
 export default router;
+
+//http://localhost:3000/users/users?page=1&sort=email
+//http://localhost:3000/product/new-product
+//http://localhost:3000/product/updated/:id
+//http://localhost:3000/product/deleted/:id
+//http://localhost:3000/product/deteil/:id
