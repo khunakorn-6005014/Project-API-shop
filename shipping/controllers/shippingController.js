@@ -8,7 +8,7 @@ export const createShipment = asyncHandler(async (req, res) => {
 try{
   // userId is attached by your verifyToken middleware
   const userId = req.userData.userId;
-  const { orderId, address } = req.body;
+  const { orderId, address ,carrier} = req.body;
   console.log("User Data in shippingCreate:", userId);
   // Validate that address contains the required fields (optional)
   if (!address || !address.street || !address.city || !address.state || !address.postalCode || !address.country || !address.phoneNumber) {
@@ -16,7 +16,7 @@ try{
     return;
   }
   
-  const shipment = await ShippingService.createShipment({ orderId, userId, address });
+  const shipment = await ShippingService.createShipment({ orderId, userId, address,carrier });
   res.status(200).json({success: true,message: "Shipment created successfully.",shipment,
   });
 }catch (error) {
@@ -58,6 +58,6 @@ export const userAcceptance = asyncHandler(async (req, res) => {
     res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
-  }
+  }  
 });
-/// addreese ? , createShipment?
+/// 
