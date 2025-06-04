@@ -36,3 +36,12 @@ export const viewCart = asyncHandler(async (req, res) => {
   const cart = await CartService.getCart(userId);
   res.status(200).json({ success: true, cart });
 });
+
+export const checkoutCart = asyncHandler(async (req, res) => {
+  const { userId } = req.userData;
+  console.log(`User ${userId} is checking out`);
+
+  const order = await CartService.checkout(userId);
+  res.status(200).json({ success: true, message: "Order created successfully", order });
+});
+

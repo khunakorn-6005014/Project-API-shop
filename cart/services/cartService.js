@@ -2,6 +2,8 @@
 import { v4 as uuidv4 } from "uuid";
 import Cart from "../models/cart.js";
 import Product from "../../product/models/product.js"
+import Order from "../../order/model/order.js"
+
 
 class CartService {
   // Retrieve or create a cart for the user
@@ -73,6 +75,30 @@ class CartService {
     console.log("Cart is removed successfully.");
     return cart;
   }
-}
 
+static async checkout(userId) {
+    let cart = await this.getCart(userId);
+
+    if (cart.items.length === 0) {
+      throw new Error("Cart is empty. Cannot proceed with checkout.");
+    }
+    // Create order based on cart contents
+    const order = await Order.create({
+      orderId: uuidv4(),
+      userId,
+      products: cart.items,     // directly using cart items
+      totalAmount: cart.totalAmount,
+      status: "pending"
+    });
+
+    console.log(`Order ${order.orderId} created for user ${userId}`);
+
+    // Clear the cart after successful checkout
+    cart.items = [];
+    cart.totalAmount = 0;
+    await cart.save();
+
+    return order;
+  }
+}
 export default CartService;
