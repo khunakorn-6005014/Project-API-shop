@@ -14,9 +14,14 @@ class ShippingService {
    * @param {Object} params
    * @param {String} params.orderId
    * @param {String} params.userId
-   * @param {Object} params.address - The address details (street, city, state, postalCode, country, phoneNumber).
+   * @param {Object} params.address 
+   * @param {Object} params.carrier
+   * - The address details (street, city, state, postalCode, country, phoneNumber).
    * @returns {Promise<Object>} The shipment record.
    */
+  // @param lines are not executable code; 
+  // they're just descriptions. Meanwhile, the function parameters 
+  // (like { orderId, userId, address }) are defined by the signature.
  static async createShipment({ orderId, userId, address }) {
     const trackingNumber = uuidv4().slice(0, 12); // Simulated tracking number
 
@@ -25,12 +30,12 @@ class ShippingService {
       orderId,
       userId,
       trackingNumber,
-      carrier: "FedEx", // Default carrier; can be dynamic later.
+      carrier , // Default carrier; can be dynamic later.
       address, // This is the user-provided address.
       status: "awaiting shipment",
       expectedDeliveryDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000), // 5 days from now.
     });
-
+     console.log(" the shipping details:", shipment);
     // Update order status to reflect shipment initiation.
     await Order.findOneAndUpdate({ orderId }, { status: "awaiting shipment" });
 
@@ -51,6 +56,7 @@ class ShippingService {
   static async handleUserDecision({ orderId, userId, decision }) {
     // Find the shipment and ensure that it has been delivered.
     const shipment = await Shipping.findOne({ orderId, userId });
+    console.log(" the shipping details:", shipment);
     if (!shipment || shipment.status !== "delivered") {
       throw new Error("Shipment must be marked as delivered before acceptance or return.");
     }

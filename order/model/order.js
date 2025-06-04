@@ -9,7 +9,18 @@ const OrderSchema = new mongoose.Schema({
         quantity: Number, 
         price: Number 
     }], // List of purchased items
-    status: { type: String, enum: ["pending", "paid", "shipped", "delivered","payment_failed","refunded"], default: "pending" },
+    status: { type: String, enum: [
+      "pending",         // Order created, awaiting payment.
+      "paid",            // Payment successful.
+      "payment_failed",  // Payment failed.
+      "awaiting_shipment", // Shipment has been created.
+      "shipped",         // Shipment dispatched.
+      "delivered",       // Shipment delivered.
+      "completed",       // Customer accepted the shipment.
+      "returned",        // Customer rejected the shipment.
+      "refunded"         // Refund processed.
+    ]
+, default: "pending" },
     totalAmount: { type: Number, required: true }, // Final total price
     paymentId: { type: String, ref: "Payment" }, // Link to payment details
     shippingId: { type: String, ref: "Shipping" }, // Link to shipping details
