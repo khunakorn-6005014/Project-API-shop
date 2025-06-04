@@ -7,6 +7,7 @@ import productRoutes from "./product/routes/productRoute.js"
 import cartRoutes from "./cart/routes/cartRoutes.js"
 import paymentRoutes from "./payment/routes/paymentRoute.js"
 import connectConsumer from "./shipping/mq/kafkaConsumer.js";
+import shippingRoutes from "./shipping/routes/shippingRoutes.js"
 import mongoose from "mongoose";
 mongoose.set("bufferCommands", false);
 mongoose.set("debug", true);
@@ -23,6 +24,7 @@ app.use("/users", userRoutes);
 app.use("/product",productRoutes);
 app.use("/cart", cartRoutes);
 app.use("/payment", paymentRoutes);
+app.use("/shipping", shippingRoutes);
 
 // Start the Kafka consumer for Shipping
 // Start the Kafka consumer for Shipping and server
