@@ -8,6 +8,7 @@ export const processPayment = asyncHandler(async (req, res) => {
   const  userId  = req.userData.userId; // ensure your verifyToken middleware attaches userData
   console.log("User Data in payment:", userId)
   const {orderId , amount, paymentMethod}= req.body;
+  
   const payment = await PaymentService.processPayment({
     orderId,
     userId,
