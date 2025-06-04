@@ -2,7 +2,7 @@
 import { v4 as uuidv4 } from "uuid";
 import Order from "../../order/model/order.js";
 import Payment from "../models/payment.js";
-
+import publishEvent from "../../mq/kafkaProducer.js"
 class PaymentService {
   // Simulate processing payment and update order status
   // Existing processPayment method remains unchanged
@@ -21,11 +21,21 @@ class PaymentService {
         transactionId,
       });
       // Update the corresponding order status to "paid"
+      //even in status paid but custommer can still refund 
       await Order.findOneAndUpdate({ orderId }, { status: "paid" });
+       // Publish payment completed event:
+      await publishEvent("payment.completed", {
+        orderId,
+        userId,
+        amount,
+        paymentMethod,
+        transactionId,
+        timestamp: new Date(),
+      });
       return payment;
   }
   // Refund processing: update payment record, order status, and restore inventory
-  static async refundPayment({ orderId, userId }) {
+  static async refundPayment({ orderId, userId ,refundAmount }) {
     // Create a refund record in Payment with a "refunded" status
     const refund = await Payment.create({
       paymentId: uuidv4(),
@@ -39,7 +49,20 @@ class PaymentService {
     // Update the corresponding order to "refunded"
     await Order.findOneAndUpdate({ orderId },{ status: "refunded" });
     
-    // // If the order exists and has products, update each product's inventory.
+     // Publish refund processed event:
+    await publishEvent("refund.processed", {
+      orderId,
+      userId,
+      refundAmount,
+      timestamp: new Date(),
+    });
+
+    return refund;
+  }
+}
+
+export default PaymentService;
+ // // If the order exists and has products, update each product's inventory.
     // // For each product in the order, add back the refunded quantity.
     // if (order && order.products && order.products.length) {
     //   for (const productItem of order.products) {
@@ -49,8 +72,4 @@ class PaymentService {
     //     );
     //   }
     // }(not use it because use base of Deduction on Customer Acceptance:
-    return refund;
-  }
-}
-
-export default PaymentService;
+  

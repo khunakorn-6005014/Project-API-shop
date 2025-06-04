@@ -7,6 +7,7 @@ export const processPayment = asyncHandler(async (req, res) => {
  try{
   const  userId  = req.userData.userId; // ensure your verifyToken middleware attaches userData
   console.log("User Data in payment:", userId)
+  const {orderId , amount, paymentMethod}= req.body;
   const payment = await PaymentService.processPayment({
     orderId,
     userId,
@@ -15,7 +16,7 @@ export const processPayment = asyncHandler(async (req, res) => {
   });
   res.status(200).json({success: true, message: "Payment processed successfully",payment});
  }catch(error){
-    res.status(500).json({ success: false, message: error.message });
+   console.error("Payment processing error:", error.message); // Log the error
     await Payment.create({
         paymentId: uuidv4(),
         orderId,
@@ -25,16 +26,23 @@ export const processPayment = asyncHandler(async (req, res) => {
         status: "failed",   
       });// Optionally, capture the error message/details
       await Order.findOneAndUpdate({ orderId }, { status: "payment_failed" });
-      throw new Error("Payment failed: " + error.message);
+          // Send an appropriate error response without throwing another error
+    return res.status(500).json({
+        success: false, 
+        message: "Payment processing failed",
+        error: error.message
+    });
   }
 });
 export const refundPayment = asyncHandler(async (req, res) => {
  try{
   const  userId  = req.userData.userId; // ensure your verifyToken middleware attaches userData
   console.log("User Data in payment:", userId);
+  const {orderId , refundAmount}= req.body;
   const payment = await PaymentService.refundPayment({
     orderId,
-    userId
+    userId,
+    refundAmount,
      });
   res.status(200).json({success: true,message: "Payment refunded successfully",payment});
  }
