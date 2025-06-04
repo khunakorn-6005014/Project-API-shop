@@ -2,10 +2,22 @@
 import { v4 as uuidv4 } from "uuid";
 import Shipping from "../models/shipping.js";
 import Order from "../../order/models/order.js";
+import PaymentService from "../../payment/services/paymentService.js";
+import { updateProductStock } from "../../product/utils/updateProductStock.js"
 
 class ShippingService {
   // Creates a shipment for the given order and user
-  static async createShipment({ orderId, userId }) {
+  /**
+   * Creates a shipment for the given order and user.
+   * The caller must supply the shipping address details.
+   * 
+   * @param {Object} params
+   * @param {String} params.orderId
+   * @param {String} params.userId
+   * @param {Object} params.address - The address details (street, city, state, postalCode, country, phoneNumber).
+   * @returns {Promise<Object>} The shipment record.
+   */
+ static async createShipment({ orderId, userId, address }) {
     const trackingNumber = uuidv4().slice(0, 12); // Simulated tracking number
 
     const shipment = await Shipping.create({
@@ -13,16 +25,57 @@ class ShippingService {
       orderId,
       userId,
       trackingNumber,
-      carrier: "FedEx", // You can enhance this later to choose dynamically
+      carrier: "FedEx", // Default carrier; can be dynamic later.
+      address, // This is the user-provided address.
       status: "awaiting shipment",
-      expectedDeliveryDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000), // 5 days from now
+      expectedDeliveryDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000), // 5 days from now.
     });
 
-    // Update order status to reflect shipment initiation
+    // Update order status to reflect shipment initiation.
     await Order.findOneAndUpdate({ orderId }, { status: "awaiting shipment" });
 
     return shipment;
   }
+
+  /**
+   * Handles the user decision once the shipment has been delivered.
+   * If accepted, the inventory is decremented permanently.
+   * If returned, the refund process is triggered.
+   * 
+   * @param {Object} params
+   * @param {String} params.orderId
+   * @param {String} params.userId
+   * @param {String} params.decision - Either "accept" or "return".
+   * @returns {Promise<Object>} A response message.
+   */
+  static async handleUserDecision({ orderId, userId, decision }) {
+    // Find the shipment and ensure that it has been delivered.
+    const shipment = await Shipping.findOne({ orderId, userId });
+    if (!shipment || shipment.status !== "delivered") {
+      throw new Error("Shipment must be marked as delivered before acceptance or return.");
+    }
+
+    if (decision === "accept") {
+      await Order.findOneAndUpdate({ orderId }, { status: "completed" });
+
+      // Decrement inventory permanently.
+      const order = await Order.findOne({ orderId });
+      for (const productItem of order.products) {
+        await updateProductStock(productItem.productId, productItem.quantity, "decrement");
+      }
+    } else if (decision === "return") {
+      await Order.findOneAndUpdate({ orderId }, { status: "returned" });
+
+      // Retrieve the order to get the totalAmount for refunding.
+      const order = await Order.findOne({ orderId });
+      await PaymentService.refundPayment({ orderId, userId, refundAmount: order.totalAmount });
+    } else {
+      throw new Error("Invalid decision. Must be 'accept' or 'return'.");
+    }
+
+    return { success: true, message: `Order ${decision}d successfully.` };
+  }
 }
+
 
 export default ShippingService;
