@@ -15,4 +15,10 @@ The project suppose to make the student gain confindence in the following skills
 • Database - Mongodb
 • Test - Postman/Insomnia
 • Security - json web token
+-------------------------------------------------
+##  Docker Compose simplifies multi-container setups by defining services, 
 
+## Run Everything with One Command
+docker-compose up -d
+## To stop:
+docker-compose down
