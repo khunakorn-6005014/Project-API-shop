@@ -1,3 +1,4 @@
+// APIproject/payment/models/payment.js
 import mongoose from "mongoose";
 import { v4 as uuidv4 } from "uuid";
 
@@ -24,12 +25,12 @@ const PaymentSchema = new mongoose.Schema({
   },
   paymentMethod: { 
     type: String, 
-    enum: ["credit_card", "paypal", "bank_transfer"], 
+    enum: ["credit_card", "paypal", "bank_transfer","refund"], 
     required: true 
   },
   status: { 
     type: String, 
-    enum: ["pending", "completed", "failed"], 
+    enum: ["pending", "completed", "failed","refunded"], 
     default: "pending" 
   },
   transactionId: { 
