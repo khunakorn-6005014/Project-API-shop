@@ -6,6 +6,7 @@ import userRoutes from "./users/routes/userRoute.js";
 import productRoutes from "./product/routes/productRoute.js"
 import cartRoutes from "./cart/routes/cartRoutes.js"
 import paymentRoutes from "./payment/routes/paymentRoute.js"
+import connectConsumer from "./shipping/mq/kafkaConsumer.js";
 import mongoose from "mongoose";
 mongoose.set("bufferCommands", false);
 mongoose.set("debug", true);
@@ -23,8 +24,21 @@ app.use("/product",productRoutes);
 app.use("/cart", cartRoutes);
 app.use("/payment", paymentRoutes);
 
-app.listen(PORT,()=>{
-    console.log(`Server is running on http://localhost:${PORT}`);})
+// Start the Kafka consumer for Shipping
+// Start the Kafka consumer for Shipping and server
+(async () => {
+  try {
+    await connectConsumer();
+    console.log("Shipping Kafka consumer connected.");
+
+    // Start server **only once**
+    app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+  } catch (error) {
+    console.error("Error connecting Kafka Consumer:", error);
+  }
+})();
+
+
 //docker build -t user-service .
 //docker run -d -p 3000:3000 user-service
 //node server.js
