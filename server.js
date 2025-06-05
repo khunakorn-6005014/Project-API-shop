@@ -28,17 +28,9 @@ app.use("/shipping", shippingRoutes);
 
 // Start the Kafka consumer for Shipping
 // Start the Kafka consumer for Shipping and server
-(async () => {
-  try {
-    await connectConsumer();
-    console.log("Shipping Kafka consumer connected.");
-
     // Start server **only once**
-    app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
-  } catch (error) {
-    console.error("Error connecting Kafka Consumer:", error);
-  }
-})();
+app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+  
 
 
 //docker build -t user-service .

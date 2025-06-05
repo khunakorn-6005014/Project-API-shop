@@ -1,7 +1,12 @@
 ## kubernetes 
  → Used to orchestrate containers, manage scaling, and handle networking efficiently
+## Kind (Kubernetes IN Docker)
+ is an excellent option for running Kubernetes locally inside Docker.
+# Create a Kind Cluster
 
-## Deploy to Kubernetes:
+# To delete the Kind cluster:
+kind delete cluster --name my-cluster
+## Deploy to Kubernetes: manifests inside Kind
 kubectl apply -f payment-deployment.yaml
 kubectl apply -f shipping-deployment.yaml
 
