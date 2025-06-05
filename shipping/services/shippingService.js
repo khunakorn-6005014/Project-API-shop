@@ -23,8 +23,15 @@ class ShippingService {
   // they're just descriptions. Meanwhile, the function parameters 
   // (like { orderId, userId, address }) are defined by the signature.
  static async createShipment({ orderId, userId, address }) {
-    const trackingNumber = uuidv4().slice(0, 12); // Simulated tracking number
+     const order = await Order.findOne({ orderId });
+           if (!order) {
+           throw new Error("Order not found.");
+         }
+         if (order.userId !== userId) {
+           throw new Error("Order does not belong to this user.");
+         }
 
+    const trackingNumber = uuidv4().slice(0, 12); // Simulated tracking number
     const shipment = await Shipping.create({
       shipmentId: uuidv4(),
       orderId,
@@ -55,6 +62,13 @@ class ShippingService {
    */
   static async handleUserDecision({ orderId, userId, decision }) {
     // Find the shipment and ensure that it has been delivered.
+    const order = await Order.findOne({ orderId });
+          if (!order) {
+          throw new Error("Order not found.");
+        }
+        if (order.userId !== userId) {
+          throw new Error("Order does not belong to this user.");
+        }
     const shipment = await Shipping.findOne({ orderId, userId });
     console.log(" the shipping details:", shipment);
     if (!shipment || shipment.status !== "delivered") {

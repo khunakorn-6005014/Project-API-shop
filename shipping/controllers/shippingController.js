@@ -2,6 +2,7 @@
 import asyncHandler from "express-async-handler";
 import ShippingService from "../services/shippingService.js";
 import Shipping from "../models/shipping.js";
+import Order from "../../order/model/order.js"
 
 // Endpoint to create a shipment with a provided address
 export const createShipment = asyncHandler(async (req, res) => {
@@ -27,7 +28,14 @@ export const updateShipmentStatus = asyncHandler(async (req, res) => {
 try{  
   const userId = req.userData.userId; // or use admin authentication
   const { orderId, newStatus } = req.body;
-  console.log("User Data in shippingCreate:", userId);
+  const order = await Order.findOne({ orderId });
+        if (!order) {
+        throw new Error("Order not found.");
+      }
+      if (order.userId !== userId) {
+        throw new Error("Order does not belong to this user.");
+      }
+  console.log("User Data in updatedShipping:", userId);
   // For safety, you might want to only allow certain transitions.
   // Here, we're allowing the update to 'delivered'
   if (newStatus !== "delivered") {
