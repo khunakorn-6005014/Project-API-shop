@@ -7,9 +7,9 @@
 # To delete the Kind cluster:
 kind delete cluster --name my-cluster
 ## Deploy to Kubernetes: manifests inside Kind
-kubectl apply -f payment-deployment.yaml
-kubectl apply -f shipping-deployment.yaml
-
+-kubectl apply -f APIproject/kubernetes/payment-deployment.yaml
+-kubectl apply -f APIproject/kubernetes/shipping-deployment.yaml
+-kubectl apply -f APIproject/kubernetes/notifications-deployment.yaml
 ## List all running deployments:
 kubectl get deployments
 ## Delete a specific deployment
@@ -18,3 +18,4 @@ kubectl delete deployment <deployment_name>
 kubectl delete deployments --all
 # stop Kubernetes entirely:
 kubectl delete all --all
+

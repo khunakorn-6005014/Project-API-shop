@@ -22,3 +22,4 @@ The project suppose to make the student gain confindence in the following skills
 docker-compose up -d
 ## To stop:
 docker-compose down
+
