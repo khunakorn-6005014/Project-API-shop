@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  notifications-service:
+    build: ./notifications
+    container_name: notifications-service
+    depends_on:
+      - kafka
+    ports:
+      - "3003:3003"
