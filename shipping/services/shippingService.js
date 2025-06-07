@@ -1,7 +1,7 @@
 // APIproject/shipping/services/shippingService.js
 import { v4 as uuidv4 } from "uuid";
 import Shipping from "../models/shipping.js";
-import Order from "../../order/models/order.js";
+import Order from "../../order/model/order.js";
 import PaymentService from "../../payment/services/paymentService.js";
 import { updateProductStock } from "../../product/utils/updateProductStock.js"
 
