@@ -22,7 +22,7 @@ class ShippingService {
   // @param lines are not executable code; 
   // they're just descriptions. Meanwhile, the function parameters 
   // (like { orderId, userId, address }) are defined by the signature.
- static async createShipment({ orderId, userId, address }) {
+ static async createShipment({ orderId, userId, address,carrier }) {
      const order = await Order.findOne({ orderId });
            if (!order) {
            throw new Error("Order not found.");
