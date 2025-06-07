@@ -1,4 +1,4 @@
-//APIproject/user/server.js
+//APIproject/server.js
 import express from "express"; 
 import cors from "cors";
 import { dbconnection } from "./config/db.config.js";
@@ -6,7 +6,6 @@ import userRoutes from "./users/routes/userRoute.js";
 import productRoutes from "./product/routes/productRoute.js"
 import cartRoutes from "./cart/routes/cartRoutes.js"
 import paymentRoutes from "./payment/routes/paymentRoute.js"
-import connectConsumer from "./shipping/mq/kafkaConsumer.js";
 import shippingRoutes from "./shipping/routes/shippingRoutes.js"
 import mongoose from "mongoose";
 mongoose.set("bufferCommands", false);

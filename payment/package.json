@@ -1,0 +1,12 @@
+{
+  "name": "payment",
+  "version": "1.0.0",
+  "description": "docker build -t payment-service ./payment\r docker run -d -p 3001:3001 payment-service\r # List running containers: \r docker ps\r ## List all containers (including stopped ones): \r docker ps -a\r ## Stop a container: \r docker stop <container_id>\r ## Remove a container: \r docker rm <container_id>",
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
