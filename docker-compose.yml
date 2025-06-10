@@ -1,6 +1,18 @@
 version: '3.8'
 
+networks:
+  microservices-network:
+    driver: bridge
+
 services:
+  zookeeper:
+    image: bitnami/zookeeper
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    networks:
+      - microservices-network
+
   kafka:
     image: bitnami/kafka
     container_name: kafka
@@ -10,27 +22,43 @@ services:
       - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
     ports:
       - "9092:9092"
-  
-  zookeeper:
-    image: bitnami/zookeeper
-    container_name: zookeeper
-    ports:
-      - "2181:2181"
+    depends_on:
+      - zookeeper
+    networks:
+      - microservices-network
 
   payment-service:
     build: ./payment
     container_name: payment-service
     depends_on:
       - kafka
+    environment:
+      - KAFKA_BROKER=kafka:9092  # ✅ Use Kafka container name instead of localhost
     ports:
       - "3001:3001"
+    networks:
+      - microservices-network
 
   shipping-service:
     build: ./shipping
     container_name: shipping-service
     depends_on:
       - kafka
+    environment:
+      - KAFKA_BROKER=kafka:9092  # ✅ Use Kafka container name instead of localhost
     ports:
       - "3002:3002"
- 
+    networks:
+      - microservices-network
 
+  notifications-service:
+    build: ./notification
+    container_name: notifications-service
+    depends_on:
+      - kafka
+    environment:
+      - KAFKA_BROKER=kafka:9092  # ✅ Ensure Notifications can connect to Kafka
+    ports:
+      - "3003:3003"
+    networks:
+      - microservices-network

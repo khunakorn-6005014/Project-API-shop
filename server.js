@@ -25,9 +25,6 @@ app.use("/cart", cartRoutes);
 app.use("/payment", paymentRoutes);
 app.use("/shipping", shippingRoutes);
 
-// Start the Kafka consumer for Shipping
-// Start the Kafka consumer for Shipping and server
-    // Start server **only once**
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
   
 
