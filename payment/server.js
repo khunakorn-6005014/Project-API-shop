@@ -6,6 +6,8 @@ import paymentRoutes from "./routes/paymentRoute.js"; // Ensure you have this fi
 import dotenv from 'dotenv';
 dotenv.config();
 
+const app = express(); 
+
 const PORT = process.env.PORT || 3001;
 const DB_URL = process.env.MONGODB_URL;
 

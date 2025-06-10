@@ -1,4 +1,4 @@
-// APIproject/notifications/controllers/notificationController.js
+// APIproject/notification/controllers/notificationController.js
 import asyncHandler from "express-async-handler";
 import Notification from "../models/notification.js";
 
