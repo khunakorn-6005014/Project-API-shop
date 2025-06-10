@@ -2,7 +2,7 @@
 import { v4 as uuidv4 } from "uuid";
 import Order from "../../order/model/order.js";
 import Payment from "../models/payment.js";
-import publishEvent from "../../mq/kafkaProducer.js"
+import publishEvent from "../mq/kafkaProducer.js"
 class PaymentService {
   // Simulate processing payment and update order status
   // Existing processPayment method remains unchanged

@@ -1,0 +1,22 @@
+{
+  "name": "shipping",
+  "version": "1.0.0",
+  "description": "docker build -t shipping-service ./shipping\r docker run -d -p 3002:3002 shipping-service\r # List running containers: \r docker ps\r ## List all containers (including stopped ones): \r docker ps -a\r ## Stop a container: \r docker stop <container_id>\r ## Remove a container: \r docker rm <container_id>\r ##  stop all containers at once:\r docker stop $(docker ps -q)\r ##  to remove Docker images:\r docker rmi -f <image_id>\r ## remove all images:\r docker rmi $(docker images -q)",
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "express-async-handler": "^1.2.0",
+    "jsonwebtoken": "^9.0.2",
+    "kafkajs": "^2.2.4",
+    "mongoose": "^8.15.1",
+    "uuid": "^11.1.0"
+  }
+}

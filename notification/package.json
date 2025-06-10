@@ -1,7 +1,7 @@
 {
-  "name": "payment",
+  "name": "notification",
   "version": "1.0.0",
-  "description": "docker build -t payment-service ./payment\r docker run -d -p 3001:3001 payment-service\r # List running containers: \r docker ps\r ## List all containers (including stopped ones): \r docker ps -a\r ## Stop a container: \r docker stop <container_id>\r ## Remove a container: \r docker rm <container_id>",
+  "description": "",
   "license": "ISC",
   "author": "",
   "type": "module",

@@ -1,12 +1,15 @@
 // APIproject/shipping/mq/kafkaConsumer.js
 import { Kafka } from "kafkajs";
 import ShippingService from "../services/shippingService.js";
+import dotenv from 'dotenv';
+dotenv.config();
+
 //- Used in Shipping Service
 // Will run as an independent service inside Kubernetes
 
 const kafka = new Kafka({
   clientId: "shipping-service",
-  brokers: ["localhost:9092"], // Adjust broker addresses accordingly
+  brokers: [process.env.KAFKA_BROKER || 'kafka:9092'], // Adjust broker addresses accordingly
 });
 
 const consumer = kafka.consumer({ groupId: "shipping-group" });

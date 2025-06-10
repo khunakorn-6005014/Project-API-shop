@@ -1,10 +1,12 @@
 // APIproject/notifications/mq/kafkaConsumer.js
 import { Kafka } from "kafkajs";
 import NotificationService from "../services/notificationService.js";
+import dotenv from 'dotenv';
+dotenv.config();
 
 const kafka = new Kafka({
   clientId: "notifications-service",
-  brokers: ["kafka:9092"], // Docker/Kubernetes setup
+  brokers: [process.env.KAFKA_BROKER || 'kafka:9092'], // Docker/Kubernetes setup
 });
 
 const consumer = kafka.consumer({ groupId: "notifications-group" });
