@@ -8,8 +8,8 @@ dotenv.config();
 const app = express(); 
 
 const PORT = process.env.PORT || 3001;
-const DB_URL = process.env.MONGODB_URL;
-
+const DB_URL = process.env.MONGO_URI;
+console.log("MongoDB URI from .env:", DB_URL);
 mongoose.connect(DB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("Connected to MongoDB"))
   .catch(err => console.error("MongoDB Connection Error:", err));
