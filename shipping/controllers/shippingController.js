@@ -2,7 +2,7 @@
 import asyncHandler from "express-async-handler";
 import ShippingService from "../services/shippingService.js";
 import Shipping from "../models/shipping.js";
-import Order from "../../order/model/order.js"
+import Order from "../order/model/order.js";
 
 // Endpoint to create a shipment with a provided address
 export const createShipment = asyncHandler(async (req, res) => {
