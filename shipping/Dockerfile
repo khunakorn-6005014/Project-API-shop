@@ -7,8 +7,11 @@ COPY shipping/package*.json ./
 
 # IMPORTANT: Copy the shared directory into the build (adjust the destination as needed)
 # This command copies the entire "shared" folder from the root (which is available because context is .)
-# You need to choose a destination such that the package.json dependency "auth-lib": "file:../shared/auth-lib" can resolve.
-COPY shared ./../shared
+# Copy the shared folder to an absolute path /shared
+COPY shared /shared
+
+# Copy the order folder into the container
+COPY order ./order
 
 # Install dependencies
 RUN npm install

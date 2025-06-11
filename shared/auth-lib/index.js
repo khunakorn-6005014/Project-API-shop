@@ -1,20 +1,28 @@
 // APIProject/shared/auth-lib/index.js
-// index.js in auth-lib
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
 
-// Your token verification logic
 const verifyToken = (req, res, next) => {
-  // Example logic: extract token from headers and verify
-  const token = req.headers.authorization && req.headers.authorization.split(' ')[1];
-  if (!token) {
-    return res.status(401).json({ error: "No token provided" });
+  console.log("auth-lib: verifyToken middleware invoked");  // Debug log
+
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.toLowerCase().startsWith("bearer ")) {
+    return res.status(401).json({ message: "Invalid or missing token. Authentication Failed" });
   }
+  
+  const token = authHeader.split(" ")[1];
+  if (!process.env.JWT_SECRET) {
+    return res.status(500).json({ message: "Server misconfiguration: JWT secret missing" });
+  }
+
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.userData = decoded; // assuming decoded token includes userId
+    req.userData = decoded;
+    console.log("auth-lib: token verified", decoded);  // Debug log
     next();
   } catch (err) {
-    return res.status(401).json({ error: "Invalid token" });
+    console.error("auth-lib: token verification error", err);
+    const message = err.name === "TokenExpiredError" ? "Token expired. Please log in again." : "Invalid token. Authentication Failed";
+    return res.status(401).json({ message, error: err.message });
   }
 };
 
