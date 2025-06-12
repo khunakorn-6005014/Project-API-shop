@@ -2,8 +2,10 @@
 import { v4 as uuidv4 } from "uuid";
 import Shipping from "../models/shipping.js";
 import Order from "../order/model/order.js";
-import { updateProductStock } from "../../product/utils/updateProductStock.js"
-import { publishEvent } from '../mq/kafkaProducer.js';
+import { updateProductStock } from "../product/utils/updateProductStock.js";
+import { publishShippingEvent as publishEvent } from "../mq/producer.js";  // ← correct path
+
+
 
 class ShippingService {
   // Creates a shipment for the given order and user
@@ -63,45 +65,36 @@ class ShippingService {
   static async handleUserDecision({ orderId, userId, decision }) {
     // Find the shipment and ensure that it has been delivered.
     const order = await Order.findOne({ orderId });
-          if (!order) {
-          throw new Error("Order not found.");
-        }
-        if (order.userId !== userId) {
-          throw new Error("Order does not belong to this user.");
-        }
+    if (!order) throw new Error("Order not found.");
+    if (order.userId !== userId) throw new Error("Order does not belong to this user.");
+
     const shipment = await Shipping.findOne({ orderId, userId });
-    console.log(" the shipping details:", shipment);
     if (!shipment || shipment.status !== "delivered") {
-      throw new Error("Shipment must be marked as delivered before acceptance or return.");
+      throw new Error("Shipment must be delivered before accept/return.");
     }
 
     if (decision === "accept") {
       await Order.findOneAndUpdate({ orderId }, { status: "completed" });
-
       // Decrement inventory permanently.
-      const order = await Order.findOne({ orderId });
-      for (const productItem of order.products) {
+       for (const productItem of order.products) {
         await updateProductStock(productItem.productId, productItem.quantity, "decrement");
       }
     } else if (decision === "return") {
       await Order.findOneAndUpdate({ orderId }, { status: "returned" });
-
-      // Retrieve the order to get the totalAmount for refunding.
-      const order = await Order.findOne({ orderId });
+      // publish a refund request event
       await publishEvent("shipment.returned", {
-           orderId,
-           userId,
-           refundAmount: order.totalAmount,
-           timestamp: new Date(),
-       });
-
-    } else {
-      throw new Error("Invalid decision. Must be 'accept' or 'return'.");
+        orderId,
+        userId,
+        refundAmount: order.totalAmount,
+        timestamp: new Date(),
+      });
+    }
+    else {
+      throw new Error("Decision must be 'accept' or 'return'.");
     }
 
     return { success: true, message: `Order ${decision}d successfully.` };
   }
 }
-
-
 export default ShippingService;
+

@@ -4,11 +4,15 @@ import shippingRoutes from "./routes/shippingRoutes.js"; // Adjust path if neede
 import cors from "cors";
 import mongoose from "mongoose";
 import dotenv from 'dotenv';
-import { runConsumer, shutdownConsumer } from './mq/kafkaConsumer.js';
+import { initProducer, shutdownProducer } from './mq/producer.js';
+import { initConsumer, shutdownConsumer } from './mq/consumer.js';
+
 
 
 dotenv.config();
-await runConsumer();
+await initProducer();
+await initConsumer();
+
 const app = express(); 
 
 const PORT = process.env.PORT || 3001;
@@ -28,5 +32,7 @@ app.get("/test-auth", verifyToken, (req, res) => {
 app.listen(PORT, () =>
   console.log(`Shipping Service running on port ${PORT}`)
 );
-process.on('SIGTERM', shutdownConsumer);
+process.on('SIGINT',  shutdownProducer);
+process.on('SIGTERM', shutdownProducer);
 process.on('SIGINT',  shutdownConsumer);
+process.on('SIGTERM', shutdownConsumer);

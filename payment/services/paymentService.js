@@ -2,7 +2,7 @@
 import { v4 as uuidv4 } from "uuid";
 import Order from "../order/model/order.js";
 import Payment from "../models/payment.js";
-import publishEvent from "../mq/kafkaProducer.js"
+import { publishEvent } from "../mq/producer.js";
 class PaymentService {
   // Simulate processing payment and update order status
   // Existing processPayment method remains unchanged
@@ -31,7 +31,7 @@ class PaymentService {
       });
       // Update the corresponding order status to "paid"
       //even in status paid but custommer can still refund 
-      await Order.findOneAndUpdate({ orderId }, { status: "paid" });
+       await Order.findOneAndUpdate({ orderId }, { status: "paid" });
        // Publish payment completed event:
       await publishEvent(process.env.PAYMENT_COMPLETED_TOPIC, {
         orderId,
@@ -65,21 +65,23 @@ class PaymentService {
       status: "refunded",
       transactionId: uuidv4(),
     });
-    // Update the corresponding order to "refunded"
-    await Order.findOneAndUpdate({ orderId },{ status: "refunded" });
-    
-     // Publish refund processed event:
-    await publishEvent("refund.processed", {
-      orderId,
-      userId,
-      refundAmount,
-      timestamp: new Date(),
-    });
-
-    return refund;
+     // If the order has not already been marked as "returned", then update it
+  // Otherwise, leave the order status as is (i.e., still "returned")
+  if (order.status !== "returned") {
+    await Order.findOneAndUpdate({ orderId }, { status: "refunded" });
   }
+     // Publish refund processed event:
+  await publishEvent("refund.processed", {
+    orderId,
+    userId,
+    refundAmount,
+    timestamp: new Date(),
+  });
+
+  return refund;
 }
 
+}
 export default PaymentService;
  // // If the order exists and has products, update each product's inventory.
     // // For each product in the order, add back the refunded quantity.

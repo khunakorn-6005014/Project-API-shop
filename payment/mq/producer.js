@@ -43,6 +43,7 @@ export const publishEvent = async (topic, payload) => {
 };
 export async function shutdownProducer() {
   await producer.disconnect();
+  console.log('Payment producer disconnected');
 }
 
 export default publishEvent
