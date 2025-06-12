@@ -33,7 +33,7 @@ class PaymentService {
       //even in status paid but custommer can still refund 
       await Order.findOneAndUpdate({ orderId }, { status: "paid" });
        // Publish payment completed event:
-      await publishEvent("payment.completed", {
+      await publishEvent(process.env.PAYMENT_COMPLETED_TOPIC, {
         orderId,
         userId,
         amount,

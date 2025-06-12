@@ -3,9 +3,12 @@ import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
 import paymentRoutes from "./routes/paymentRoute.js"; // Ensure you have this file
+import { initProducer, shutdownProducer } from './mq/kafkaProducer.js';
 import dotenv from 'dotenv';
+
 dotenv.config();
 const app = express(); 
+await initProducer()
 
 const PORT = process.env.PORT || 3001;
 const DB_URL = process.env.MONGO_URI;
@@ -21,3 +24,6 @@ app.use("/payment", paymentRoutes);
 app.listen(PORT, () =>
   console.log(`Payment Service running on port ${PORT}`)
 );
+process.on('SIGTERM', shutdownProducer);
+process.on('SIGINT',  shutdownProducer);
+

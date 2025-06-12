@@ -13,23 +13,36 @@ const kafka = new Kafka({
 });//- want it to use "kafka:9092" because Docker networking resolves the container named kafka
 
 const producer = kafka.producer();
-await producer.connect(); // Connect when the container starts
-export const publishEvent = async (topic, message) => {
+export async function initProducer() {
+  try {
+    await producer.connect();// Connect when the container starts
+    console.log("Kafka producer connected.");
+  } catch (error) {
+    console.error("Error connecting Kafka producer:", error);
+    // Add retry logic if necessary
+  }
+}
+
+export const publishEvent = async (topic, payload) => {
   try {
     await producer.send({
       topic,
       messages: [
         {
           // using orderId as a key could be useful for partitioning if needed
-          key: message.orderId,
-          value: JSON.stringify(message),
+          key: payload.orderId,
+        value: JSON.stringify(payload),
         },
       ],
     });
-    console.log(`Message published to topic ${topic}:`, message);
+    console.log(`Published event to ${topic}`, payload);
   } catch (error) {
     console.error(`Failed to publish message to topic ${topic}:`, error);
     throw error;
   }
 };
+export async function shutdownProducer() {
+  await producer.disconnect();
+}
+
 export default publishEvent
