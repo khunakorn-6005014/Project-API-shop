@@ -3,7 +3,6 @@ import { Kafka } from "kafkajs";
 import dotenv from 'dotenv';
 dotenv.config();
 
-
 // - Used in Payment Service
 // - Will connect automatically inside Payment microservice container
 
