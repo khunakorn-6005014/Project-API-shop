@@ -2,8 +2,8 @@
 import { v4 as uuidv4 } from "uuid";
 import Shipping from "../models/shipping.js";
 import Order from "../order/model/order.js";
-import PaymentService from '../shared/paymentService.js';
 import { updateProductStock } from "../../product/utils/updateProductStock.js"
+import { publishEvent } from '../mq/kafkaProducer.js';
 
 class ShippingService {
   // Creates a shipment for the given order and user
@@ -88,7 +88,13 @@ class ShippingService {
 
       // Retrieve the order to get the totalAmount for refunding.
       const order = await Order.findOne({ orderId });
-      await PaymentService.refundPayment({ orderId, userId, refundAmount: order.totalAmount });
+      await publishEvent("shipment.returned", {
+           orderId,
+           userId,
+           refundAmount: order.totalAmount,
+           timestamp: new Date(),
+       });
+
     } else {
       throw new Error("Invalid decision. Must be 'accept' or 'return'.");
     }

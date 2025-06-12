@@ -6,26 +6,31 @@ dotenv.config();
 
 //- Used in Shipping Service
 // Will run as an independent service inside Kubernetes
-
 const kafka = new Kafka({
   clientId: "shipping-service",
   brokers: [process.env.KAFKA_BROKER || 'kafka:9092'], // Adjust broker addresses accordingly
 });
 
 const consumer = kafka.consumer({ groupId: "shipping-group" });
+export async function runConsumer() {
+  await consumer.connect();
+  await consumer.subscribe({
+    topic: process.env.PAYMENT_COMPLETED_TOPIC,
+    fromBeginning: false,
+  });
 
-await consumer.connect();
-await consumer.subscribe({ topic: "payment.completed", fromBeginning: true });
-
-consumer.run({
-  eachMessage: async ({ topic, partition, message }) => {
-    const paymentData = JSON.parse(message.value.toString());
-    console.log("Received Payment Event in Shipping:", paymentData);
-
+ await consumer.run({
+  eachMessage: async ({ message }) => {
+    const evt = JSON.parse(message.value.toString());
+      console.log('← Got payment.completed', evt);
     await ShippingService.createShipment({
-      orderId: paymentData.orderId,
-      userId: paymentData.userId,
+      orderId: evt.orderId,
+      userId: evt.userId,
     });
   },
 });
-console.log("Shipping service is listening for payment events...");
+console.log("Shipping consumer running ,is listening for payment events...");
+}
+export async function shutdownConsumer() {
+  await consumer.disconnect();
+}

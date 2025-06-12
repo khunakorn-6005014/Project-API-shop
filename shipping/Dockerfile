@@ -13,7 +13,10 @@ COPY shared /shared
 # Copy the order folder into the container
 COPY order ./order
 
-# Install dependencies
+# Copy the product folder
+COPY product ./product
+
+# Install dependencie
 RUN npm install
 
 # Copy the shipping service source code:
