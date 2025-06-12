@@ -16,6 +16,7 @@ COPY order ./order
 # Copy the product folder
 COPY product ./product
 
+COPY shipping/ .
 # Install dependencie
 RUN npm install
 
