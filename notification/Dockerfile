@@ -1,8 +1,19 @@
-# APIproject/notifications/Dockerfile
+# APIproject/notification/Dockerfile
 FROM node:18-alpine
 WORKDIR /app
-COPY package.json ./
+
+# Copy package files first (using the correct paths)
+COPY notification/package*.json ./
+
+# Copy shared code so that file dependencies are met
+COPY shared /shared
+
+# Install dependencies (auth-lib from file:/shared/auth-lib will be resolved)
 RUN npm install
-COPY . .
+
+# Copy the rest of the Notifications service code
+COPY notification/ .
+
 EXPOSE 3003
+
 CMD ["node", "server.js"]
