@@ -1,10 +1,9 @@
 import express from "express";
-import { getNotifications, markNotificationAsRead } from "../controllers/notificationController.js";
-import verifyToken from "../node_modules/auth-lib/index.js"; // Ensure this exists and works
+import { getUserNotifications, markNotificationAsRead } from "../controllers/notificationController.js";
 
 const router = express.Router();
 
-router.get("/",verifyToken, getNotifications);
-router.post("/read",verifyToken, markNotificationAsRead);
+router.get("/", getUserNotifications);
+router.post("/read", markNotificationAsRead);
 
 export default router;
