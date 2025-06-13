@@ -6,7 +6,7 @@ WORKDIR /app
 COPY notification/package*.json ./
 
 # Copy shared code so that file dependencies are met
-COPY shared /shared
+#COPY shared /shared
 
 # Install dependencies (auth-lib from file:/shared/auth-lib will be resolved)
 RUN npm install

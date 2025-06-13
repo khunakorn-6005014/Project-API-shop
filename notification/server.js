@@ -4,7 +4,7 @@ import cors from "cors";
 import mongoose from "mongoose";
 import notificationRoutes from "./routes/notificationRoutes.js";
 import dotenv from 'dotenv';
-import { initConsumer,shutdownConsumer } from "./mq/consumer.js";
+import { initConsumer,shutdownConsumer } from "./mq/kafkaConsumer.js";
 
 
 dotenv.config();
