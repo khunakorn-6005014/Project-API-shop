@@ -25,9 +25,6 @@ app.use(express.json());
 app.use(cors());
 app.use("/shipping", shippingRoutes);
 // In shipping/server.js, after initializing express app...
-app.get("/test-auth", verifyToken, (req, res) => {
-  res.json({ message: "Protected route access verified", userData: req.userData });
-});
 app.listen(PORT, () =>
   console.log(`Shipping Service running on port ${PORT}`)
 );
