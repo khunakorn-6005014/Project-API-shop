@@ -2,6 +2,7 @@
 import express from "express";
 import { createShipment,userAcceptance,updateShipmentStatus } from "../controllers/shippingController.js";
 import verifyToken from "../node_modules/auth-lib/index.js";
+//import verifyToken from "auth-lib";
 //import verifyToken from "../../config/auth.middleware.js"
 const router = express.Router();
 
