@@ -66,31 +66,31 @@ services:
       dockerfile: ./shipping/Dockerfile
     container_name: shipping-service
     env_file:
-      - .env
+     - .env
     depends_on:
-      - kafka
+     - kafka
     environment:
-      - KAFKA_BROKER=kafka:9092
+     - KAFKA_BROKER=kafka:9092
     ports:
-      - "3002:3002"
+     - "3002:3002"
     networks:
-      - microservices-network
+     - microservices-network
 
   notifications-service:
     build:
-      context: ./notification   
-      dockerfile: Dockerfile
+      context: .                       
+      dockerfile: ./notification/Dockerfile
     container_name: notifications-service
     env_file:
-      - .env
+     - .env
     depends_on:
-      - kafka
+     - kafka
     environment:
-      - KAFKA_BROKER=kafka:9092
+     - KAFKA_BROKER=kafka:9092
     ports:
-      - "3003:3003"
+     - "3003:3003"
     networks:
-      - microservices-network
+     - microservices-network
 
 networks:
   microservices-network:

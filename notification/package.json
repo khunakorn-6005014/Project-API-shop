@@ -5,9 +5,10 @@
   "license": "ISC",
   "author": "",
   "type": "module",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
@@ -16,7 +17,8 @@
     "express-async-handler": "^1.2.0",
     "jsonwebtoken": "^9.0.2",
     "kafkajs": "^2.2.4",
-    "mongoose": "^8.15.1",
-    "uuid": "^11.1.0"
+    "mongoose": "^8.15.2",
+    "uuid": "^11.1.0",
+    "auth-lib": "file:/shared/auth-lib"
   }
 }
