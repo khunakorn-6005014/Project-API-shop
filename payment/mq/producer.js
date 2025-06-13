@@ -21,7 +21,6 @@ export async function initProducer() {
     // Add retry logic if necessary
   }
 }
-
 export const publishEvent = async (topic, payload) => {
   try {
     await producer.send({

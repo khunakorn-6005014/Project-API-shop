@@ -2,30 +2,48 @@ version: '3.8'
 
 services:
   zookeeper:
-    image: bitnami/zookeeper:latest
+    image: confluentinc/cp-zookeeper:5.5.0
     container_name: zookeeper
     ports:
       - "2181:2181"
     environment:
-      - ALLOW_ANONYMOUS_LOGIN=yes
+      ZOOKEEPER_CLIENT_PORT: 2181
     networks:
       - microservices-network
 
   kafka:
-    image: bitnami/kafka:latest
+    image: confluentinc/cp-kafka:5.5.0
     container_name: kafka
     depends_on:
       - zookeeper
-    environment:
-      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
-      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092
-      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
-      - ALLOW_PLAINTEXT_LISTENER=yes
     ports:
-      - "9092:9092"
+      - "9092:9092"   # internal / containers
+      - "9094:9094"   # external / localhost
+    environment:
+      # ZooKeeper connection
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+
+      # Two listeners:
+      #   INSIDE  – what other containers use (kafka:9092)
+      #   OUTSIDE – what host tools use (localhost:9094)
+      - KAFKA_ADVERTISED_LISTENERS=INSIDE://kafka:9092,OUTSIDE://localhost:9094
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      - KAFKA_LISTENERS=INSIDE://0.0.0.0:9092,OUTSIDE://0.0.0.0:9094
+
+      # Set inter-broker listener to one of the advertised listeners
+      - KAFKA_INTER_BROKER_LISTENER_NAME=INSIDE
+
+      # Single-node dev defaults
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1
+      - KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1
+      - ALLOW_PLAINTEXT_LISTENER=yes
     networks:
       - microservices-network
-
+    healthcheck:
+      test: ["CMD", "bash", "-c", "echo > /dev/tcp/localhost/9092"]
+      interval: 10s
+      retries: 10
   payment-service:
     build:
       context: .
@@ -60,8 +78,8 @@ services:
 
   notifications-service:
     build:
-      context: .
-      dockerfile: ./notifications/Dockerfile
+      context: ./notification   
+      dockerfile: Dockerfile
     container_name: notifications-service
     env_file:
       - .env
