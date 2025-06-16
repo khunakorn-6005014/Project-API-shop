@@ -1,2 +1,9 @@
-node_modules/
-.env
+# Ignore node_modules everywhere
+node_modules
+**/node_modules
+
+# Ignore specific temporary or lock files
+*.lock
+*.sock
+.venv
+npm-debug.log
