@@ -5,8 +5,6 @@ import Order from "../order/model/order.js";
 import { updateProductStock } from "../product/utils/updateProductStock.js";
 import { publishShippingEvent as publishEvent } from "../mq/producer.js";  // ← correct path
 
-
-
 class ShippingService {
   // Creates a shipment for the given order and user
   /**
@@ -50,7 +48,47 @@ class ShippingService {
 
     return shipment;
   }
-
+   // updated a shipment for the given order and user
+  /**
+   * @param {Object} params
+   * @param {String} params.orderId
+   * @param {String} params.userId
+   * @param {String} params.newStatus
+   * @returns {Promise<Object>} A response message.
+   */
+  static async updateDeliverStatus ({ orderId, userId, newStatus }) {
+    // Verify order and ownership
+    const order = await Order.findOne({ orderId });
+    if (!order) throw new Error("Order not found.");
+    if (order.userId !== userId) throw new Error("Order does not belong to this user.");
+    
+    // Enforce that status must be "delivered" no matter what, ignoring newStatus parameter:
+    if (newStatus !== "delivered") {
+      throw new Error("Only 'delivered' status allowed here.");
+    }
+    
+    // Explicitly set status to "delivered"
+    const shipment = await Shipping.findOneAndUpdate(
+      { orderId, userId },
+      { status: "delivered" },
+      { new: true }
+    );
+    if (!shipment) throw new Error("Shipment not found.");
+    
+    // Wrap the publishEvent call in a timeout to avoid hang-ups.
+    await withTimeout(
+      publishEvent("shipment.delivered", {
+        orderId,
+        userId,
+        status: "delivered",
+        timestamp: new Date(),
+      }),
+      5000, // set a 5-second timeout (adjust as needed)
+      "Timeout: Publishing 'shipment.delivered' event took too long."
+    );
+    
+    return { success: true, message: "Order delivered successfully.", shipment };
+  }
   /**
    * Handles the user decision once the shipment has been delivered.
    * If accepted, the inventory is decremented permanently.

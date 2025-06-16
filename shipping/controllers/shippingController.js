@@ -1,8 +1,6 @@
 // APIproject/shipping/controllers/shippingController.js
 import asyncHandler from "express-async-handler";
 import ShippingService from "../services/shippingService.js";
-import Shipping from "../models/shipping.js";
-import Order from "../order/model/order.js";
 
 // Endpoint to create a shipment with a provided address
 export const createShipment = asyncHandler(async (req, res) => {
@@ -24,36 +22,20 @@ try{
         res.status(500).json({ success: false, message: error.message });
 }
 });
+
 export const updateShipmentStatus = asyncHandler(async (req, res) => {
 try{  
   const userId = req.userData.userId; // or use admin authentication
   const { orderId, newStatus } = req.body;
-  const order = await Order.findOne({ orderId });
-        if (!order) {
-        throw new Error("Order not found.");
-      }
-      if (order.userId !== userId) {
-        throw new Error("Order does not belong to this user.");
-      }
-  console.log("User Data in updatedShipping:", userId);
-  // For safety, you might want to only allow certain transitions.
-  // Here, we're allowing the update to 'delivered'
-  if (newStatus !== "delivered") {
-    return res.status(400).json({ success: false, message: "Only delivered status can be set using this endpoint." });
-  }
-  const shipment = await Shipping.findOneAndUpdate(
-    { orderId, userId },
-    { status: newStatus },
-    { new: true }
-  );
-  if (!shipment) {
-    return res.status(404).json({ success: false, message: "Shipment not found." });
-  }
-  res.status(200).json({ success: true, message: "Shipment status updated successfully.", shipment });
+    console.log("User Data in updatedShipping:", userId);
+    
+  const result = await ShippingService.updateDeliverStatus({ orderId, userId, newStatus });
+  res.status(200).json({ success: true, message: "Shipment status updated to deliverd successfully.", result });
 }catch (error) {
         res.status(500).json({ success: false, message: error.message });
 }
  });
+
 
 
 export const userAcceptance = asyncHandler(async (req, res) => {
@@ -68,4 +50,3 @@ export const userAcceptance = asyncHandler(async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }  
 });
-/// 
