@@ -22,12 +22,12 @@ await consumer.run({
     eachMessage: async ({ message }) => {
       const event = JSON.parse(message.value.toString());
       console.log('Shipping ← got payment.completed', event);
-      try {
-        await ShippingService.createShipment({ orderId: event.orderId, userId: event.userId });
-        console.log('Shipment created for order', event.orderId);
-      } catch (err) {
-        console.error('Shipment creation failed for order', event.orderId, err);
-      }
+      // try {
+      //   await ShippingService.createShipment({ orderId: event.orderId, userId: event.userId });
+      //   console.log('Shipment created for order', event.orderId);
+      // } catch (err) {
+      //   console.error('Shipment creation failed for order', event.orderId, err);
+      // }
     },
   });
 }

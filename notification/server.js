@@ -10,7 +10,7 @@ import { initConsumer,shutdownConsumer } from "./mq/kafkaConsumer.js";
 dotenv.config();
 async function start() {
  const app = express(); 
- const PORT = process.env.PORT;
+ const PORT = process.env.PORT_NOTI || 3003;
  const DB_URL = process.env.MONGO_URI;
  console.log("MongoDB URI from .env:", DB_URL);
 mongoose.connect(DB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
