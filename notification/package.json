@@ -16,7 +16,7 @@
     "express-async-handler": "^1.2.0",
     "jsonwebtoken": "^9.0.2",
     "kafkajs": "^2.2.4",
-    "mongoose": "^8.15.1",
-    "uuid": "^11.1.0"
+    "mongoose": "^8.15.2",
+    "auth-lib": "file:/shared/auth-lib"
   }
 }

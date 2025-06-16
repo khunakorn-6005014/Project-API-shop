@@ -78,8 +78,8 @@ services:
 
   notifications-service:
     build:
-      context: ./notification   
-      dockerfile: Dockerfile
+      context: .   
+      dockerfile: notification/Dockerfile
     container_name: notifications-service
     env_file:
       - .env
