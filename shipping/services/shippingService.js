@@ -5,6 +5,13 @@ import Order from "../order/model/order.js";
 import { updateProductStock } from "../product/utils/updateProductStock.js";
 import { publishShippingEvent as publishEvent } from "../mq/producer.js";  // ← correct path
 
+// Helper function to wrap a promise with a timeout
+function withTimeout(promise, ms, errorMsg) {
+  const timeout = new Promise((_, reject) => {
+    setTimeout(() => reject(new Error(errorMsg)), ms);
+  });
+  return Promise.race([promise, timeout]);
+}
 class ShippingService {
   // Creates a shipment for the given order and user
   /**
@@ -76,13 +83,13 @@ class ShippingService {
     if (!shipment) throw new Error("Shipment not found.");
     
     // Wrap the publishEvent call in a timeout to avoid hang-ups.
-    await withTimeout(
-      publishEvent("shipment.delivered", {
-        orderId,
-        userId,
-        status: "delivered",
-        timestamp: new Date(),
-      }),
+ await withTimeout(
+  publishEvent("shipment.delivered", {
+    orderId,
+    userId,
+    status: "delivered",
+    timestamp: new Date(),
+  }),
       5000, // set a 5-second timeout (adjust as needed)
       "Timeout: Publishing 'shipment.delivered' event took too long."
     );
