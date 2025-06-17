@@ -78,13 +78,8 @@ services:
 
   notifications-service:
     build:
-<<<<<<< HEAD
       context: .   
       dockerfile: notification/Dockerfile
-=======
-      context: .                       
-      dockerfile: ./notification/Dockerfile
->>>>>>> e2a817be2b092f7acb90a462b3c22d55d64ea9fb
     container_name: notifications-service
     env_file:
      - .env

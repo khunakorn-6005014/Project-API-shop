@@ -46,7 +46,6 @@ function buildPayload(topic, evt) {
   }
 }
 
-<<<<<<< HEAD
 // Define the counter for processed messages
 const processedMessagesCounter = new client.Counter({
   name: 'processed_messages_total',
@@ -124,34 +123,4 @@ export async function initConsumer() {
 export async function shutdownConsumer() {
   await consumer.disconnect();
   console.log('Notification consumer disconnected');
-=======
-
-export async function initConsumer() {
-await consumer.connect();
-// Subscribe to key topics
-  await consumer.subscribe({ topic: "payment.completed", fromBeginning: true });
-  await consumer.subscribe({ topic: "shipment.delivered", fromBeginning: true });
-  await consumer.subscribe({ topic: "refund.processed", fromBeginning: true });
-
-await consumer.run({
-  eachMessage: async ({ topic, message }) => {
-      const event = JSON.parse(message.value.toString());
-      console.log(`Received ${topic} event in Notifications Service:`, event);
-
-      // For simplicity, save a notification for every event received.
-      const payload = buildPayload(topic, evt);
-      if (!payload.userId) {
-        return console.warn("Skipping saving notification: missing userId");
-      }
-      // Create a notification document in MongoDB
-      await Notification.create(payload);
-    }
-  });
-}
-
-
-export async function shutdownConsumer() {
-  await consumer.disconnect();
-  console.log('notification consumer disconnected');
->>>>>>> e2a817be2b092f7acb90a462b3c22d55d64ea9fb
 }
