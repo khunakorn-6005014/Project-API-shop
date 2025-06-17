@@ -13,11 +13,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 async function start() {
  const app = express(); 
-<<<<<<< HEAD
  const PORT = process.env.PORT_PAY || 3001;
-=======
- const PORT = process.env.PORT ;
->>>>>>> e2a817be2b092f7acb90a462b3c22d55d64ea9fb
  const DB_URL = process.env.MONGO_URI;
  console.log("MongoDB URI from .env:", DB_URL);
  mongoose.connect(DB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
