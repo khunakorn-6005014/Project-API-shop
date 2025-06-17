@@ -1,0 +1,28 @@
+groups:
+  - name: MicroserviceAlerts
+    rules:
+      - alert: HighHTTP95Latency
+        # 95th-percentile latency per route over 5m
+        expr: |
+          histogram_quantile(
+            0.95,
+            sum(
+              rate(http_request_duration_ms_bucket[5m])
+            ) by (le, route)
+          ) > 500
+        for: 2m
+        labels:
+          severity: page
+        annotations:
+          summary: "High HTTP latency on {{ $labels.route }}"
+          description: "95th percentile latency is {{ $value }}ms for route {{ $labels.route }}"
+
+      - alert: NoMessagesProcessed
+        # Fires if no messages processed in 5m
+        expr: rate(processed_messages_total[5m]) == 0
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Kafka consumer stalled"
+          description: "No Kafka messages processed in the last 5 minutes."

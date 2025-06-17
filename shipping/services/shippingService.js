@@ -5,6 +5,16 @@ import Order from "../order/model/order.js";
 import { updateProductStock } from "../product/utils/updateProductStock.js";
 import { publishShippingEvent as publishEvent } from "../mq/producer.js";  // ← correct path
 
+<<<<<<< HEAD
+// Helper function to wrap a promise with a timeout
+function withTimeout(promise, ms, errorMsg) {
+  const timeout = new Promise((_, reject) => {
+    setTimeout(() => reject(new Error(errorMsg)), ms);
+  });
+  return Promise.race([promise, timeout]);
+}
+=======
+>>>>>>> e2a817be2b092f7acb90a462b3c22d55d64ea9fb
 class ShippingService {
   // Creates a shipment for the given order and user
   /**
@@ -57,6 +67,40 @@ class ShippingService {
    * @returns {Promise<Object>} A response message.
    */
   static async updateDeliverStatus ({ orderId, userId, newStatus }) {
+<<<<<<< HEAD
+    // Verify order and ownership
+    const order = await Order.findOne({ orderId });
+    if (!order) throw new Error("Order not found.");
+    if (order.userId !== userId) throw new Error("Order does not belong to this user.");
+    
+    // Enforce that status must be "delivered" no matter what, ignoring newStatus parameter:
+    if (newStatus !== "delivered") {
+      throw new Error("Only 'delivered' status allowed here.");
+    }
+    
+    // Explicitly set status to "delivered"
+    const shipment = await Shipping.findOneAndUpdate(
+      { orderId, userId },
+      { status: "delivered" },
+      { new: true }
+    );
+    if (!shipment) throw new Error("Shipment not found.");
+    
+    // Wrap the publishEvent call in a timeout to avoid hang-ups.
+ await withTimeout(
+  publishEvent("shipment.delivered", {
+    orderId,
+    userId,
+    status: "delivered",
+    timestamp: new Date(),
+  }),
+      5000, // set a 5-second timeout (adjust as needed)
+      "Timeout: Publishing 'shipment.delivered' event took too long."
+    );
+    
+    return { success: true, message: "Order delivered successfully.", shipment };
+  }
+=======
     // Find the shipment and ensure that it has been delivered.
     const order = await Order.findOne({ orderId });
     if (!order) throw new Error("Order not found.");
@@ -84,6 +128,7 @@ await publishEvent("shipment.delivered", {
 
 return { success: true, message: "Order deliverd successfully." ,shipment};
 }
+>>>>>>> e2a817be2b092f7acb90a462b3c22d55d64ea9fb
   /**
    * Handles the user decision once the shipment has been delivered.
    * If accepted, the inventory is decremented permanently.
@@ -130,4 +175,3 @@ return { success: true, message: "Order deliverd successfully." ,shipment};
   }
 }
 export default ShippingService;
-

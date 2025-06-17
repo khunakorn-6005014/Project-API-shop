@@ -10,6 +10,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "auth-lib": "file:/shared/auth-lib",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
@@ -17,7 +18,7 @@
     "jsonwebtoken": "^9.0.2",
     "kafkajs": "^2.2.4",
     "mongoose": "^8.15.1",
-    "uuid": "^11.1.0",
-    "auth-lib": "file:/shared/auth-lib"
+    "prom-client": "^15.1.3",
+    "uuid": "^11.1.0"
   }
 }
