@@ -35,15 +35,6 @@ const httpRequestDurationMs = new client.Histogram({
   labelNames: ['method', 'route', 'status_code'],
   buckets: [50, 100, 200, 300, 400, 500, 750, 1000, 2000],
 });
-// Add a counter to track processed messages (this can be used within your Kafka consumer)
-const processedMessagesCounter = new client.Counter({
-  name: 'processed_messages_total',
-  help: 'Total number of processed messages',
-});
-
-// When processing a message:
-processedMessagesCounter.inc();  // Use this in your message processing logic.
-// Middleware to track metrics for each HTTP request.
 app.use((req, res, next) => {
   const start = Date.now();
   res.on('finish', () => {
