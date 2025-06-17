@@ -12,7 +12,11 @@ import { initConsumer, shutdownConsumer } from './mq/consumer.js';
 
 dotenv.config();
 async function start() {
+<<<<<<< HEAD
 const PORT = process.env.PORT_SHIP || 3002;
+=======
+const PORT = process.env.PORT ;
+>>>>>>> e2a817be2b092f7acb90a462b3c22d55d64ea9fb
 const DB_URL = process.env.MONGO_URI;
 console.log("MongoDB URI from .env:", DB_URL);
 mongoose.connect(DB_URL, { useNewUrlParser: true, useUnifiedTopology: true })

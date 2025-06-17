@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Ignore node_modules everywhere
 node_modules
 **/node_modules
@@ -6,4 +7,8 @@ node_modules
 *.lock
 *.sock
 .venv
+=======
+node_modules
+**/node_modules
+>>>>>>> e2a817be2b092f7acb90a462b3c22d55d64ea9fb
 npm-debug.log

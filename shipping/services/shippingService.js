@@ -5,6 +5,7 @@ import Order from "../order/model/order.js";
 import { updateProductStock } from "../product/utils/updateProductStock.js";
 import { publishShippingEvent as publishEvent } from "../mq/producer.js";  // ← correct path
 
+<<<<<<< HEAD
 // Helper function to wrap a promise with a timeout
 function withTimeout(promise, ms, errorMsg) {
   const timeout = new Promise((_, reject) => {
@@ -12,6 +13,8 @@ function withTimeout(promise, ms, errorMsg) {
   });
   return Promise.race([promise, timeout]);
 }
+=======
+>>>>>>> e2a817be2b092f7acb90a462b3c22d55d64ea9fb
 class ShippingService {
   // Creates a shipment for the given order and user
   /**
@@ -64,6 +67,7 @@ class ShippingService {
    * @returns {Promise<Object>} A response message.
    */
   static async updateDeliverStatus ({ orderId, userId, newStatus }) {
+<<<<<<< HEAD
     // Verify order and ownership
     const order = await Order.findOne({ orderId });
     if (!order) throw new Error("Order not found.");
@@ -96,6 +100,35 @@ class ShippingService {
     
     return { success: true, message: "Order delivered successfully.", shipment };
   }
+=======
+    // Find the shipment and ensure that it has been delivered.
+    const order = await Order.findOne({ orderId });
+    if (!order) throw new Error("Order not found.");
+    if (order.userId !== userId) throw new Error("Order does not belong to this user.");    
+  // For safety, you might want to only allow certain transitions.
+  // Here, we're allowing the update to 'delivered
+         
+if (newStatus !== "delivered") {
+    throw new Error("Only 'delivered' status allowed here.");
+ }
+const shipment = await Shipping.findOneAndUpdate(
+    { orderId, userId },
+    { status: newStatus },
+    { new: true }
+  );
+if (!shipment) {
+    throw new Error("Shipment not found.");
+  }
+await publishEvent("shipment.delivered", {
+        orderId,
+        userId,
+        newStatus,
+        timestamp: new Date(),
+      });
+
+return { success: true, message: "Order deliverd successfully." ,shipment};
+}
+>>>>>>> e2a817be2b092f7acb90a462b3c22d55d64ea9fb
   /**
    * Handles the user decision once the shipment has been delivered.
    * If accepted, the inventory is decremented permanently.
