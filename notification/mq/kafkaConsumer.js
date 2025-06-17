@@ -2,6 +2,7 @@
 import { Kafka } from "kafkajs";
 import Notification from "../models/notification.js";
 import dotenv from 'dotenv';
+import client from 'prom-client';
 dotenv.config();
 
 const kafka = new Kafka({
