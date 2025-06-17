@@ -11,6 +11,13 @@ const kafka = new Kafka({
 
 const consumer = kafka.consumer({ groupId: "notifications-group" });
 
+// Define the counter for processed messages
+const processedMessagesCounter = new client.Counter({
+  name: 'processed_messages_total',
+  help: 'Total number of processed messages',
+});
+
+
 /**
  * Build the payload for a Notification document based on Kafka topic and event data.
  */
@@ -41,7 +48,7 @@ function buildPayload(topic, evt) {
       return {
         title: `Event ${topic}`,
         message: JSON.stringify(evt),
-        type: "payment", // default (or adjust as needed)
+        type: "payment", // default 
         userId: evt.userId
       };
   }
@@ -59,6 +66,9 @@ export async function initConsumer() {
       // Parse the incoming message
       const event = JSON.parse(message.value.toString());
       console.log(`Received ${topic} event in Notifications Service:`, event);
+      // Process the message as needed...
+      // Once processing is successful, increment the counter:
+      processedMessagesCounter.inc();
 
       // Build the payload using 'event' (not "evt", which was undefined)
       const payload = buildPayload(topic, event);
