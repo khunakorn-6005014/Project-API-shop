@@ -1,6 +1,5 @@
 // APIproject/shipping/mq/kafkaConsumer.js
 import { Kafka } from "kafkajs";
-import ShippingService from "../services/shippingService.js";
 import dotenv from 'dotenv';
 dotenv.config();
 
