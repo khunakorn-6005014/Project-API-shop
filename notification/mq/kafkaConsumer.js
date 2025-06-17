@@ -10,41 +10,6 @@ const kafka = new Kafka({
   brokers: [process.env.KAFKA_BROKER || 'kafka:9092'], // Docker/Kubernetes setup
 });
 const consumer = kafka.consumer({ groupId: "notifications-group" });
-/**
- * Build the payload for a Notification document based on Kafka topic and event data.
- */
-function buildPayload(topic, evt) {
-  switch (topic) {
-    case "payment.completed":
-      return {
-        title: "Payment Successful",
-        message: `Your payment of $${evt.amount} for order ${evt.orderId} was processed.`,
-        type: "payment",
-        userId: evt.userId
-      };
-    case "shipment.delivered":
-      return {
-        title: "Shipment Delivered",
-        message: `Your order ${evt.orderId} has been delivered!`,
-        type: "shipping",
-        userId: evt.userId
-      };
-    case "refund.processed":
-      return {
-        title: "Refund Issued",
-        message: `A refund of $${evt.refundAmount} for order ${evt.orderId} was processed.`,
-        type: "refund",
-        userId: evt.userId
-      };
-    default:
-      return {
-        title: `Event ${topic}`,
-        message: JSON.stringify(evt),
-        type: "payment", // default (or adjust as needed)
-        userId: evt.userId
-      };
-  }
-}
 
 // Define the counter for processed messages
 const processedMessagesCounter = new client.Counter({
