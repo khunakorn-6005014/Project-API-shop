@@ -1,0 +1,32 @@
+version: '3.5'
+# --- docker-compose-metric.yml---
+services:
+# --- Monitoring Stack ---  
+  prometheus:
+    image: prom/prometheus:v2.21.0
+    container_name: prometheus
+    volumes:
+      - ./etc/prometheus/:/etc/prometheus/  # Make sure you have a valid Prometheus config file in this directory.
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    ports:
+      - "9090:9090"
+    restart: always
+    networks:
+      - metrics-network
+
+  grafana:
+    image: grafana/grafana:6.5.0
+    container_name: grafana
+    ports:
+      - "4000:3000"
+    networks:
+      - metrics-network
+    restart: always
+
+networks:
+  metrics-network:
+    driver: bridge
