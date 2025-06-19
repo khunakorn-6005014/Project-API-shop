@@ -20,6 +20,13 @@ The project suppose to make the student gain confindence in the following skills
 
 ## Run Everything with One Command
 docker-compose up -d
+docker-compose -f docker-compose.yml -f docker-compose-metric.yml up --buildc
 ## To stop:
 docker-compose down
+docker-compose -f docker-compose.yml -f docker-compose-metric.yml down --volumes --remove-orphans
 
+## Grafana 
+http://localhost:4000
+
+## prometheus
+http://localhost:9090/targets
