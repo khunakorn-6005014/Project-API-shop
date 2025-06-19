@@ -16,7 +16,6 @@ RUN npm install
 COPY shipping/ .
 # Also copy any required directories from the root, if your code depends on them.
 # For example, if the shipping service depends on shared modules:
-
 COPY order ./order
 COPY product ./product
 
