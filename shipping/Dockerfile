@@ -24,3 +24,4 @@ EXPOSE 3002
 
 # Run the service
 CMD ["node", "server.js"]
+

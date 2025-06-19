@@ -15,3 +15,7 @@ docker stop $(docker ps -q)
 docker rmi -f <image_id>
 ## remove all images:
 docker rmi $(docker images -q)
+##
+npm install         # make sure devDependencies (jest, supertest, mongodb-memory-server) are installed
+npm test            # runs all unit & integration tests under tests/
+“service-level tests currently run outside Docker; containerised runner to be added later
