@@ -1,7 +1,7 @@
 // APIproject/api-gateway/src/app.js
 import express from 'express';
 import helmet from 'helmet';
-import jwtValidation from './middlewares/jwt-validation.js';
+import jwtValidation from './middlewares/jwtValidation.js';
 import rateLimiter from './middlewares/rateLimit.js';
 import proxyRoutes from './routes/proxy.routes.js';
 

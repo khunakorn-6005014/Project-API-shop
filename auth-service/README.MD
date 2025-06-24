@@ -16,3 +16,29 @@ auth-service/
 │   ├── app.js                         # Express setup
 │   └── server.js                      # Listen on port 3000
 └── Dockerfile                         # Exposes port 3000
+
+- Auth Service (no gateway in front)
+— — —
+• Register
+• POST
+• URL → http://localhost:3000/auth/register
+• Body (JSON):
+- {
+"userId": "u123",
+"firstName":"Jane",
+"lastName":"Doe",
+"email":"jane@doe.com",
+"birthDay":"1990-01-01",
+"password":"hunter2"
+}
+• Login
+• POST
+• URL → http://localhost:3000/auth/login
+• Body:
+{ "email":"jane@doe.com", "password":"hunter2" }
+• Response → { “accessToken”: “eyJ…” }
+• JWKS (used by gateway)
+• GET
+• URL → http://localhost:3000/.well-known/jwks.json
+
+

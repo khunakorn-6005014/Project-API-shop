@@ -11,6 +11,7 @@
     "start": "node src/server.js"
   },
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "config": "^4.0.0",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
@@ -18,6 +19,7 @@
     "express-async-handler": "^1.2.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.16.0",
-    "pem-jwk": "^2.0.0"
+    "pem-jwk": "^2.0.0",
+    "uuid": "^11.1.0"
   }
 }

@@ -3,6 +3,7 @@ import app from './app.js';
 import https from 'https';
 import config from 'config';
 import fs from 'fs'; 
+const port = config.get('server.port');
 
 if (config.get('server.useHttps')) {
   const tlsOptions = {

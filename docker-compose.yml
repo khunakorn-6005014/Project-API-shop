@@ -73,7 +73,7 @@ services:
       - microservices-network
   user-service:
     build:
-      context: ./user-service
+      context: ./users
       dockerfile: Dockerfile
     container_name: user-service
     env_file:
