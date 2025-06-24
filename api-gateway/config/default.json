@@ -1,0 +1,23 @@
+{
+  "server": {
+    "port": 443,
+    "useHttps": true,
+    "tls": {
+      "certPath": "./config/tls/cert.pem",
+      "keyPath": "./config/tls/key.pem"
+    }
+  },
+  "auth": {
+  "jwksUri": "http://auth-service:3000/.well-known/jwks.json",
+  "algorithms": ["RS256"]
+},
+  "rateLimit": {
+    "windowMs": 900000,         
+    "maxRequests": 100        
+  },
+  "proxy": {
+    "shippingService": "http://shipping-service:3003",
+    "userService": "http://user-service:3004",
+    "paymentService": "http://payment-service:3001"
+  }
+}

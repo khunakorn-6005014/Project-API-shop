@@ -1,4 +1,3 @@
-//APIproject/user/models/user.js
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
@@ -33,10 +32,11 @@ const userSchema = new mongoose.Schema({
     required: true,
     minlength: [8, "Password must be at least 8 characters"],
   },
-  isAdmin: {
-  type: Boolean,
-  default: false, 
-},
+  roles: {
+    type: [String],
+    enum: ['user','admin','editor','moderator'],
+    default: ['user']
+  },
   favoriteList: [{ 
     type: String, 
     ref: "Product", 
@@ -53,3 +53,4 @@ myProducts: [{
 }); // ✅ Adds createdAt & updatedAt automatically
 
 export default mongoose.model("User", userSchema);
+

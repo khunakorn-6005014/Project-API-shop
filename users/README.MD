@@ -23,3 +23,22 @@ User
 • favourite flats list
 • created
 • updated
+
+user-service/
+├── Dockerfile
+├── package.json
+├── config/
+│   └── default.json         # service port, DB URI, etc.
+├── src/
+│   ├── app.js               # Express setup
+│   ├── server.js            # Starts the service
+│   ├── controllers/
+│   │     └── userController.js
+│   ├── middlewares/
+│   │     └── ensureAdmin.js
+│   ├── models/
+│   │     └── user.model.js
+│   ├── routes/
+│   │     └── user.routes.js
+│   └── db.js                # (optional) MongoDB connection
+└── README.md
