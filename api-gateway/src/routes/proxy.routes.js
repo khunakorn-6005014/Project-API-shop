@@ -11,17 +11,14 @@ const proxyShipping = createProxyMiddleware({
   pathRewrite: { '^/shipping': '' }
 });
 
-// Circuit breaker options
-const breakerOptions = {
+const breakerOptions = {// Circuit breaker options
   timeout: 3000,
   errorThresholdPercentage: 50,
   resetTimeout: 5000
 };
-
 // Wrap the proxy logic in a circuit breaker that accepts req and res.
 const shippingBreaker = new CircuitBreaker((req, res) => {
-  return new Promise((resolve, reject) => {
-    // Pass the proper arguments here.
+  return new Promise((resolve, reject) => {// Pass the proper arguments here.
     proxyShipping(req, res, (err) => {
       if (err) {
         reject(err);
@@ -64,8 +61,26 @@ router.use('/payment', createProxyMiddleware({
 router.use('/user', createProxyMiddleware({
   target: 'http://user-service:3004',
   changeOrigin: true,
-  pathRewrite: { '^/user': '' }
+  onProxyReq: (proxyReq, req, res) => {// Re-attach JSON body if available:
+    console.log("Proxy onProxyReq, req.user:", req.user);
+    if (['POST','PUT','PATCH','DELETE'].includes(req.method) && req.body) {
+      const body = JSON.stringify(req.body);
+      proxyReq.setHeader('Content-Type', 'application/json');
+      proxyReq.setHeader('Content-Length', Buffer.byteLength(body));
+      proxyReq.write(body);
+      proxyReq.end();
+    }
+    if (req.user) { // Forward the injected user headers using fallback for userId
+      // Use req.user.sub if it exists, otherwise fallback to req.user.userId
+      // const userId = req.user.sub || req.user.userId;
+      const userId = req.user.userId;
+      proxyReq.setHeader('X-User-Id', userId);
+      const roles = Array.isArray(req.user.roles)
+        ? req.user.roles.join(',')
+        : req.user.roles || '';
+      proxyReq.setHeader('X-User-Roles', roles);
+    }
+  }
 }));
-
 export default router;
 

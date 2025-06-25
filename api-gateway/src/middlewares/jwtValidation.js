@@ -12,8 +12,8 @@ const jwtValidation = expressjwt({
     jwksUri: config.get('auth.jwksUri')
   }),
   algorithms: config.get('auth.algorithms'),
-  credentialsRequired: true
-
+  credentialsRequired: true,
+  requestProperty: 'user'
 });
 
 export default jwtValidation;

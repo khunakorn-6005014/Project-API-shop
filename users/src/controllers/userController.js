@@ -26,8 +26,16 @@ export const userProfile = asyncHandler(async (req, res) => {
  
 // Utility: who is calling and what roles they have
 function getCaller(req) {
-  const callerId = req.headers['x-user-id'];
-  const roles    = (req.headers['x-user-roles'] || '').split(',');
+  const callerId = req.headers['x-user-id'] || '';
+
+  // split and remove empty entries
+  const raw = req.headers['x-user-roles'] || '';
+  const roles = raw
+    .split(',')
+    .map(r => r.trim())
+    .filter(Boolean);
+  console.log('callerId is', callerId);
+  console.log('roles     is', roles);
   return { callerId, roles };
 }
 
@@ -40,14 +48,18 @@ export const updateUser = asyncHandler(async (req, res) => {
   try {
   const { id } = req.params;
   const { callerId, roles } = getCaller(req);
+  console.log("callerId is", callerId)
+   console.log("roles is", roles)
   // Only owner or admin
  // Only owner or an elevated role can update
+  const elevated = ['admin','editor','moderator'];// Allowed elevated roles
+  console.log("Allowed elevated roles", elevated)
   const isElevated = roles.some(r => elevated.includes(r));
   if (callerId !== id && !isElevated) {
     return res.status(403).json({ message: 'You can only update your own profile.' });
   }
   // Prevent role escalation
-  if (req.body.roles) {
+  if (req.body && req.body.roles) {
     return res.status(403).json({ message: 'Cannot update roles via this endpoint.' });
   }
 
@@ -69,7 +81,9 @@ export const deleteUser = asyncHandler(async (req, res) => {
   try {
   const { id } = req.params;
   const { callerId, roles } = getCaller(req);
-
+  console.log("callerId is", callerId)
+   console.log("roles is", roles)
+  const elevated = ['admin','editor','moderator'];// Allowed elevated roles
   // Only owner or an elevated role can delete
   const isElevated = roles.some(r => elevated.includes(r));
   if (callerId !== id && !isElevated) {
@@ -109,7 +123,12 @@ export const getAllusers = asyncHandler(async (req, res) =>{
 //http://localhost:3000/users/users?page=1&sort=email
 
     try{
-       const roles    = (req.headers['x-user-roles'] || '').split(',');
+       const raw = req.headers['x-user-roles'] || '';
+       const roles = raw
+             .split(',')
+              .map(r => r.trim())
+             .filter(Boolean);
+       console.log("roles is", roles)
   // Only elevated roles can see all user accounts
        const isElevated = roles.some(r => elevated.includes(r));
   if (!isElevated) {
@@ -152,8 +171,14 @@ export const getAllusers = asyncHandler(async (req, res) =>{
 // POST /user/:id/upgrade
 export const upgradeToAdmin = asyncHandler(async (req, res) => {
      try {
-    const roles    = (req.headers['x-user-roles'] || '').split(',');
+    const raw = req.headers['x-user-roles'] || '';
+       const roles = raw
+             .split(',')
+              .map(r => r.trim())
+             .filter(Boolean);
+       console.log("roles is", roles)
   // Only elevated roles can promote others
+  const elevated = ['admin','editor','moderator'];// Allowed elevated roles
   const isElevated = roles.some(r => elevated.includes(r));
   if (!isElevated) {
     return res.status(403).json({ message: 'Admin/editor/moderator only.' });

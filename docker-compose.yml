@@ -69,6 +69,7 @@ services:
       - payment-service
       - shipping-service
       - notifications-service
+      - user-service
     networks:
       - microservices-network
   user-service:

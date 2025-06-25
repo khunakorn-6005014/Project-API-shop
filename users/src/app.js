@@ -1,3 +1,4 @@
+//APIproject/users/src/app.js
 import express from 'express';
 import userRoutes from './routes/user.routes.js';
 import cors from "cors";
@@ -11,10 +12,11 @@ mongoose.connect(DB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
   .catch(err => console.error("MongoDB Connection Error:", err));
 
 const app = express();
+app.use('/', userRoutes);
 app.use(express.json());
+//
 app.use(cors());
 // Optional: connectDB(config.get('db.uri'));
 
-app.use('/user', userRoutes);
 
 export default app;
