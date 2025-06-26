@@ -1,0 +1,22 @@
+{
+  "name": "cart",
+  "version": "1.0.0",
+  "description": "APIproject/\r  ├── cart/\r  │   ├── controllers/       # Handles requests & business logic\r  │   │   ├── cartController.js\r  │   ├── models/            # Defines database structure\r  │   │   ├── cart.js\r  │   ├── routes/            # API endpoints for interacting with Cart\r  │   │   ├── cartRoutes.js\r  │   ├── services/          # Handles core logic separate from controllers\r  │   │   ├── cartService.js\r  │   ├── validations/       # Validates cart actions (adding/removing items)\r  │   │   ├── cartValidation.js\r  │   ├── middleware/        # Middleware for verifying user actions\r  │   │   ├── verifyCart.js\r  │   ├── utils/             # Utility functions (calculating totals, formatting responses)\r  │   │   ├── cartUtils.js\r  │   ├── index.js           # Entry point for setting up the Cart module\r  📝 Role Breakdown\r ## Controllers (cartController.js) \r → Directly handles API requests.\r ## Models (cart.js) → \r Defines how Cart data is stored in MongoDB.\r ## Routes (cartRoutes.js) → \r Sets up endpoints (/cart/add, /cart/remove, etc.).\r ## Services (cartService.js)-\r  → Contains business logic for managing cart (auto-updating totals, merging carts, clearing carts).\r ## Validations (cartValidation.js)\r  → Ensures users don’t add invalid or duplicate items.\r ## Middleware (verifyCart.js) → \r Checks user authentication before modifying the cart.\r ## Utils (cartUtils.js) \r → Houses helper functions for dynamic calculations.",
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/server.js"
+  },
+  "dependencies": {
+    "config": "^4.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "express-async-handler": "^1.2.0",
+    "mongoose": "^8.16.0",
+    "uuid": "^11.1.0"
+  }
+}

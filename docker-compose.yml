@@ -70,6 +70,7 @@ services:
       - shipping-service
       - notifications-service
       - user-service
+      - product-service
     networks:
       - microservices-network
   user-service:
@@ -92,7 +93,17 @@ services:
       - "3005:3005"
     networks:
       - microservices-network
-
+  cart-service:
+    build:
+      context: ./cart
+      dockerfile: Dockerfile
+    container_name: cart-service
+    env_file:
+      - .env
+    ports:
+      - "3006:3006"
+    networks:
+      - microservices-network
 
   payment-service:
     build:
