@@ -83,6 +83,17 @@ services:
       - "3004:3004"
     networks:
       - microservices-network
+  product-service:
+    build:
+      context: ./product
+      dockerfile: Dockerfile
+    container_name: product-service
+    ports:
+      - "3005:3005"
+    networks:
+      - microservices-network
+
+
   payment-service:
     build:
       context: .

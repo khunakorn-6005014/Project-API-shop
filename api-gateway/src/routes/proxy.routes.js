@@ -82,5 +82,33 @@ router.use('/user', createProxyMiddleware({
     }
   }
 }));
+router.use('/product',createProxyMiddleware({
+  target: 'http://product-service:3005',
+  changeOrigin: true,
+    // pathRewrite: { '^/product': '' },
+  onProxyReq: (proxyReq, req, res) => {
+      if (req.user) {// Forward user headers
+        const userId = req.user.sub ?? req.user.userId;
+        proxyReq.setHeader('X-User-Id', userId);
+        const roles = Array.isArray(req.user.roles)
+          ? req.user.roles.join(',')
+          : req.user.roles || '';
+        proxyReq.setHeader('X-User-Roles', roles);
+      }
+      if (// If you consumed the body in the gateway
+        ['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method) &&
+        req.body
+      ) {
+        const body = JSON.stringify(req.body);
+        proxyReq.setHeader('Content-Type', 'application/json');
+        proxyReq.setHeader('Content-Length', Buffer.byteLength(body));
+        proxyReq.write(body);
+        proxyReq.end();   // don’t forget to end the stream
+      }
+    }
+}));
+
+
+
 export default router;
 

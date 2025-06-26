@@ -5,9 +5,13 @@ import User from '../models/user.model.js';
 export const userProfile = asyncHandler(async (req, res) => {
    try {
     const { id } = req.params;
+    const callerId = req.headers['x-user-id'] || '';
   const verifyUser = await User.findOne({ userId: id });
   if (!verifyUser) {
     return res.status(404).json({ message: "User not found", success: false });
+  }
+  if (callerId !== id) {
+    return res.status(403).json({ message: 'You can only view your own profile.' });
   }
   res.status(200).json({
     message: `User ${verifyUser.firstName} ${verifyUser.lastName}`,
@@ -35,7 +39,7 @@ function getCaller(req) {
     .map(r => r.trim())
     .filter(Boolean);
   console.log('callerId is', callerId);
-  console.log('roles     is', roles);
+  console.log('roles is', roles);
   return { callerId, roles };
 }
 
