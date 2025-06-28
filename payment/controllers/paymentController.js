@@ -5,8 +5,11 @@ import PaymentService from "../services/paymentService.js";
 // Endpoint to process a payment for an order
 export const processPayment = asyncHandler(async (req, res) => {
  try{
-  const  userId  = req.userData.userId; // ensure your verifyToken middleware attaches userData
+  const  userId  = req.headers['x-user-id'] || ''; // ensure your verifyToken middleware attaches userData
   console.log("User Data in payment:", userId)
+   if (!userId) {
+    return res.status(401).json({ message: 'Authentication required.' });
+  }
   const {orderId , amount, paymentMethod}= req.body;
   
   const payment = await PaymentService.processPayment({
@@ -37,8 +40,11 @@ export const processPayment = asyncHandler(async (req, res) => {
 });
 export const refundPayment = asyncHandler(async (req, res) => {
  try{
-  const  userId  = req.userData.userId; // ensure your verifyToken middleware attaches userData
+  const  userId  = req.headers['x-user-id'] || '';// ensure your verifyToken middleware attaches userData
   console.log("User Data in payment:", userId);
+  if (!userId) {
+    return res.status(401).json({ message: 'Authentication required.' });
+  }
   const {orderId , refundAmount}= req.body;
   const payment = await PaymentService.refundPayment({
     orderId,

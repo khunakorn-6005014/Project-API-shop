@@ -71,6 +71,7 @@ services:
       - notifications-service
       - user-service
       - product-service
+      - cart-service
     networks:
       - microservices-network
   user-service:
@@ -107,8 +108,8 @@ services:
 
   payment-service:
     build:
-      context: .
-      dockerfile: ./payment/Dockerfile
+      context: ./payment
+      dockerfile: Dockerfile
     container_name: payment-service
     env_file:
       - .env

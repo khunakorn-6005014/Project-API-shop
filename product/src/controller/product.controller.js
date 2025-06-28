@@ -33,7 +33,6 @@ export const createProduct = asyncHandler(async (req, res) => {
   if (!user) {
     return res.status(404).json({ error: 'User not found.' });
   }
-
   // Create product & link to user
   const newProduct = await Product.create({
     productId: uuidv4(),

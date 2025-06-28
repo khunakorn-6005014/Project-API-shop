@@ -42,12 +42,8 @@ router.use('/shipping', (req, res, next) => {
     .catch((fallbackResponse) => res.status(503).json(fallbackResponse));
 });
 
-// Proxy /payment without circuit breaker for simplicity, as an example.
-router.use('/payment', createProxyMiddleware({
-  target: 'http://payment-service:3001',
-  changeOrigin: true,
-  pathRewrite: { '^/payment': '' }
-}));
+
+
 //import config from 'config';
 // const userServiceUrl = config.get('proxy.userService'); 
 // // e.g. "http://user-service:3004"
@@ -95,7 +91,7 @@ router.use('/product',createProxyMiddleware({
           : req.user.roles || '';
         proxyReq.setHeader('X-User-Roles', roles);
       }
-      if (// If you consumed the body in the gateway
+      if (// If  consumed the body in the gateway
         ['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method) &&
         req.body
       ) {
@@ -103,7 +99,7 @@ router.use('/product',createProxyMiddleware({
         proxyReq.setHeader('Content-Type', 'application/json');
         proxyReq.setHeader('Content-Length', Buffer.byteLength(body));
         proxyReq.write(body);
-        proxyReq.end();   // don’t forget to end the stream
+        proxyReq.end();   // 
       }
     }
 }));
@@ -119,7 +115,7 @@ router.use('/cart',createProxyMiddleware({
           : req.user.roles || '';
         proxyReq.setHeader('X-User-Roles', roles);
       }
-      if (// If you consumed the body in the gateway
+      if (// If consumed the body in the gateway
         ['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method) &&
         req.body
       ) {
@@ -127,7 +123,33 @@ router.use('/cart',createProxyMiddleware({
         proxyReq.setHeader('Content-Type', 'application/json');
         proxyReq.setHeader('Content-Length', Buffer.byteLength(body));
         proxyReq.write(body);
-        proxyReq.end();   // don’t forget to end the stream
+        proxyReq.end();   // 
+      }
+    }
+}));
+// Proxy /payment without circuit breaker for simplicity.
+router.use('/payment', createProxyMiddleware({
+  target: 'http://payment-service:3001',
+  changeOrigin: true,
+    // pathRewrite: { '^/product': '' },
+  onProxyReq: (proxyReq, req, res) => {
+      if (req.user) {// Forward user headers
+        const userId = req.user.userId;
+        proxyReq.setHeader('X-User-Id', userId);
+        const roles = Array.isArray(req.user.roles)
+          ? req.user.roles.join(',')
+          : req.user.roles || '';
+        proxyReq.setHeader('X-User-Roles', roles);
+      }
+      if (// If consumed the body in the gateway
+        ['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method) &&
+        req.body
+      ) {
+        const body = JSON.stringify(req.body);
+        proxyReq.setHeader('Content-Type', 'application/json');
+        proxyReq.setHeader('Content-Length', Buffer.byteLength(body));
+        proxyReq.write(body);
+        proxyReq.end();   // 
       }
     }
 }));

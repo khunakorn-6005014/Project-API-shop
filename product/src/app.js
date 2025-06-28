@@ -18,5 +18,4 @@ app.use(express.json());
 app.use(cors());
 // 3) mount routes at root (gateway strips /product)
 
-
 export default app;
