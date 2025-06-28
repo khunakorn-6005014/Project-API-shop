@@ -88,7 +88,7 @@ router.use('/product',createProxyMiddleware({
     // pathRewrite: { '^/product': '' },
   onProxyReq: (proxyReq, req, res) => {
       if (req.user) {// Forward user headers
-        const userId = req.user.sub ?? req.user.userId;
+        const userId = req.user.userId;
         proxyReq.setHeader('X-User-Id', userId);
         const roles = Array.isArray(req.user.roles)
           ? req.user.roles.join(',')
@@ -112,7 +112,7 @@ router.use('/cart',createProxyMiddleware({
   changeOrigin: true,
   onProxyReq: (proxyReq, req, res) => {
       if (req.user) {// Forward user headers
-        const userId = req.user.sub ?? req.user.userId;
+        const userId =req.user.userId;
         proxyReq.setHeader('X-User-Id', userId);
         const roles = Array.isArray(req.user.roles)
           ? req.user.roles.join(',')

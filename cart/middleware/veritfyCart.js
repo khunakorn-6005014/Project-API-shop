@@ -1,1 +1,0 @@
-// Ensures users don’t add invalid or duplicate items.
