@@ -1,8 +1,8 @@
 // APIproject/shipping/services/shippingService.js
 import { v4 as uuidv4 } from "uuid";
 import Shipping from "../models/shipping.js";
-import Order from "../order/model/order.js";
-import { updateProductStock } from "../product/utils/updateProductStock.js";
+import Order from "../models/order.js";
+import { updateProductStock } from "../utils/updateProductStock.js";
 import { publishShippingEvent as publishEvent } from "../mq/producer.js";  // ← correct path
 
 // Helper function to wrap a promise with a timeout

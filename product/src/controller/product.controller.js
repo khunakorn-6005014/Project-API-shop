@@ -65,6 +65,9 @@ export const updateProduct = asyncHandler(async (req, res) => {
   console.log("roles is", roles)
   const isElevated = roles.some(r => elevated.includes(r));
   const product = await Product.findOne({ productId: id });
+    if (!callerId) {
+    return res.status(401).json({ message: 'Authentication required.' });
+  }
     if (!product) {
         return res.status(404).json({ message: "Product not found." });
     }
@@ -95,7 +98,10 @@ export const deletedProduct = asyncHandler(async (req, res) => {
    console.log("roles is", roles)
    const isElevated = roles.some(r => elevated.includes(r));
     const product = await Product.findOne({ productId: id });
-   if (!product) {
+     if (!callerId) {
+    return res.status(401).json({ message: 'Authentication required.' });
+  }
+    if (!product) {
         return res.status(404).json({ message: "Product not found." });
     }
     if (product.userId !== callerId && !isElevated) {
@@ -120,6 +126,9 @@ export const viewProductId = asyncHandler(async (req, res) => {
     const { id } = req.params;
     const callerId = req.headers['x-user-id'] || '';
     console.log("callerId in viewing product is", callerId)
+     if (!callerId) {
+    return res.status(401).json({ message: 'Authentication required.' });
+  }
     const product = await Product.findOne({ productId: id });
    if (!product) {
         return res.status(404).json({ message: "Product not found." });
@@ -155,6 +164,9 @@ const limit = Math.max(1, parseInt(req.query.limit) || 100);
     console.log("callerId in updating is", callerId)
     console.log("roles is", roles)
     const isElevated = roles.some(r => elevated.includes(r));
+     if (!callerId) {
+    return res.status(401).json({ message: 'Authentication required.' });
+  }
     if (!isElevated) {
     return res.status(403).json({ message: 'only admin, editor and moderator can view all product.' });
   }

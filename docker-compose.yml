@@ -124,8 +124,8 @@ services:
   
   shipping-service:
     build:
-      context: .
-      dockerfile: ./shipping/Dockerfile
+      context: ./shipping
+      dockerfile: Dockerfile
     container_name: shipping-service
     env_file:
      - .env

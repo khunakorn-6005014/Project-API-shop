@@ -8,7 +8,27 @@ const router = express.Router();
 const proxyShipping = createProxyMiddleware({
   target: 'http://shipping-service:3002',
   changeOrigin: true,
-  pathRewrite: { '^/shipping': '' }
+  // pathRewrite: { '^/shipping': '' },
+  onProxyReq: (proxyReq, req, res) => {// Re-attach JSON body if available:
+    console.log("Proxy onProxyReq, req.user:", req.user);
+    if (['POST','PUT','PATCH','DELETE'].includes(req.method) && req.body) {
+      const body = JSON.stringify(req.body);
+      proxyReq.setHeader('Content-Type', 'application/json');
+      proxyReq.setHeader('Content-Length', Buffer.byteLength(body));
+      proxyReq.write(body);
+      proxyReq.end();
+    }
+    if (req.user) { // Forward the injected user headers using fallback for userId
+      // Use req.user.sub if it exists, otherwise fallback to req.user.userId
+      // const userId = req.user.sub || req.user.userId;
+      const userId = req.user.userId;
+      proxyReq.setHeader('X-User-Id', userId);
+      const roles = Array.isArray(req.user.roles)
+        ? req.user.roles.join(',')
+        : req.user.roles || '';
+      proxyReq.setHeader('X-User-Roles', roles);
+    }
+  }
 });
 
 const breakerOptions = {// Circuit breaker options
@@ -17,17 +37,17 @@ const breakerOptions = {// Circuit breaker options
   resetTimeout: 5000
 };
 // Wrap the proxy logic in a circuit breaker that accepts req and res.
-const shippingBreaker = new CircuitBreaker((req, res) => {
-  return new Promise((resolve, reject) => {// Pass the proper arguments here.
+const shippingBreaker = new CircuitBreaker(
+  // this function must return a Promise
+  (req, res) => new Promise((resolve, reject) => {
     proxyShipping(req, res, (err) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve();
-      }
+      if (err) reject(err);
+      else     resolve();
     });
-  });
-}, breakerOptions);
+  }),
+  breakerOptions
+);
+
 
 // Set a fallback when the shipping service is unavailable.
 shippingBreaker.fallback(() => {
@@ -38,21 +58,13 @@ shippingBreaker.fallback(() => {
 router.use('/shipping', (req, res, next) => {
   shippingBreaker
     .fire(req, res)
-    .then(() => next())
-    .catch((fallbackResponse) => res.status(503).json(fallbackResponse));
+    .then(() => next())           // success → continue to any downstream handlers (if any)
+    .catch(fallback => {
+      // circuit open or service error → 503
+      res.status(503).json(fallback);
+    });
 });
 
-
-
-//import config from 'config';
-// const userServiceUrl = config.get('proxy.userService'); 
-// // e.g. "http://user-service:3004"
-
-// router.use('/user', createProxyMiddleware({
-//   target: userServiceUrl,
-//   changeOrigin: true,
-//   pathRewrite: { '^/user': '' }
-// }));
 
 router.use('/user', createProxyMiddleware({
   target: 'http://user-service:3004',
@@ -131,7 +143,7 @@ router.use('/cart',createProxyMiddleware({
 router.use('/payment', createProxyMiddleware({
   target: 'http://payment-service:3001',
   changeOrigin: true,
-    // pathRewrite: { '^/product': '' },
+    // pathRewrite: { '^/payment': '' },
   onProxyReq: (proxyReq, req, res) => {
       if (req.user) {// Forward user headers
         const userId = req.user.userId;
