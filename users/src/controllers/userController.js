@@ -47,6 +47,27 @@ function getCaller(req) {
 const elevated = ['admin','editor','moderator'];
 
 
+// function getRequestBody(req) {
+//   // If Express has already populated req.body, just return it
+//   if (req.body && Object.keys(req.body).length > 0) {
+//     return req.body;
+//   }
+//   // Otherwise, manually buffer the incoming stream
+//   return new Promise((resolve, reject) => {
+//     let buf = '';
+//     req.on('data', chunk => (buf += chunk));
+//     req.on('end', () => {
+//       if (!buf) return resolve({});          // no body → empty object
+//       try {
+//         return resolve(JSON.parse(buf));     // parse JSON
+//       } catch (err) {
+//         return reject(new Error('Invalid JSON'));
+//       }
+//     });
+//     req.on('error', reject);
+//   });
+// }
+
 // PUT /user/:id
 export const updateUser = asyncHandler(async (req, res) => {
   try {
@@ -66,8 +87,10 @@ export const updateUser = asyncHandler(async (req, res) => {
   if (req.body && req.body.roles) {
     return res.status(403).json({ message: 'Cannot update roles via this endpoint.' });
   }
-
-  const updated = await User.findOneAndUpdate({ userId: id }, req.body, { new: true });
+  // const updateUser= await getRequestBody(req);
+   const updateUser= req.body;
+  console.log("new update:",updateUser)
+  const updated = await User.findOneAndUpdate({ userId: id }, updateUser, { new: true });
   if (!updated) return res.status(404).json({ message: "User not found." });
   res.json({ message: "User updated successfully", user: updated });
  }

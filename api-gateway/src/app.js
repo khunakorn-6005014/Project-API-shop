@@ -8,14 +8,13 @@ import proxyRoutes from './routes/proxy.routes.js';
 const app = express();
 
 app.use(helmet());// Security headers
-app.use(express.json());// Parse JSON requests
 app.get('/', (req, res) => {
   res.json({ status: 'API Gateway up', timestamp: Date.now() });
 });
 
 app.use(rateLimiter);// Apply global rate limiting for all incoming requests
 app.use(jwtValidation);// Validate JWT for all requests (using our JWKS-based middleware)
- 
+//app.use(express.json());// Parse JSON requests 
 app.use((req, res, next) => {
   console.log("Decoded JWT:", req.user);
   if (req.user) {

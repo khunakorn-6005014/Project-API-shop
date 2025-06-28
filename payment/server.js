@@ -22,7 +22,7 @@ async function start() {
 
  await initProducer()
  await initConsumer();
- app.use("/payment", paymentRoutes);
+ 
  app.use(express.json());
  app.use(cors());
  // Collect default Node.js metrics (memory, CPU, IEC gc, etc.)
@@ -53,7 +53,7 @@ async function start() {
  });
  
  // ----------------------
- 
+ app.use('/', paymentRoutes);
  
  app.listen(PORT, () =>
   console.log(`Payment Service running on port ${PORT}`)

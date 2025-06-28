@@ -12,10 +12,10 @@ mongoose.connect(DB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
   .catch(err => console.error("MongoDB Connection Error:", err));
 
 const app = express();
-app.use('/', CartRoutes);
+
 app.use(express.json());
 app.use(cors());
-
+app.use('/', CartRoutes);
 
 
 export default app;

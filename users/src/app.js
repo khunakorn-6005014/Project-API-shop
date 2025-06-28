@@ -12,11 +12,12 @@ mongoose.connect(DB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
   .catch(err => console.error("MongoDB Connection Error:", err));
 
 const app = express();
-app.use('/', userRoutes);
+
 app.use(express.json());
+
 //
 app.use(cors());
 // Optional: connectDB(config.get('db.uri'));
-
+app.use('/', userRoutes);
 
 export default app;

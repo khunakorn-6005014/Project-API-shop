@@ -23,7 +23,7 @@ await initProducer();
 await initConsumer();
 
 const app = express(); 
-app.use("/shipping", shippingRoutes);
+
 app.use(express.json());
 app.use(cors());
 // Collect default Node.js metrics (memory, CPU, IEC gc, etc.)
@@ -54,7 +54,7 @@ app.get('/metrics', async (req, res) => {
 });
 
 // ----------------------
-
+app.use('/', shippingRoutes);
 
 // In shipping/server.js, after initializing express app...
 app.listen(PORT, () =>
