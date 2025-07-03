@@ -2,8 +2,8 @@
 import asyncHandler from 'express-async-handler';
 import { v4 as uuidv4 } from 'uuid';
 import Product from '../models/product.js';
-import User from '../models/User.js';         // assuming you copied the User model
-
+//import User from '../models/User.js';         // assuming you copied the User model
+import {publishEvent} from '../mq/producer.js'
 function getCaller(req) {
   const callerId = req.headers['x-user-id'] || '';
   // split and remove empty entries
@@ -28,11 +28,8 @@ export const createProduct = asyncHandler(async (req, res) => {
   if (!name || price == null || amount == null) {
     return res.status(400).json({ error: 'Missing required fields.' });
   }
-  // Verify user exists
-  const user = await User.findOne({ userId: callerId });
-  if (!user) {
-    return res.status(404).json({ error: 'User not found.' });
-  }
+
+
   // Create product & link to user
   const newProduct = await Product.create({
     productId: uuidv4(),
@@ -42,11 +39,23 @@ export const createProduct = asyncHandler(async (req, res) => {
     amount,
     userId: callerId
   });
-
+  // Verify user exists
+  // const user = await User.findOne({ userId: callerId });
+  // if (!user) {
+  //   return res.status(404).json({ error: 'User not found.' });
+  // }
   // Optionally push into user.myProducts
-  user.myProducts.push(newProduct.productId);
-  await user.save();
-
+  // user.myProducts.push(newProduct.productId);
+  // await user.save();
+await publishEvent(ProductCreated,{
+    productId: newProduct.productId,
+    name: newProduct.name,
+    price: newProduct.price,
+    description: newProduct.description,
+    amount : newProduct.amount,
+    userId: callerId,
+    timestamp: new Date(),
+});
   res.status(201).json({
     success: true,
     message: 'Product created',
@@ -80,6 +89,15 @@ export const updateProduct = asyncHandler(async (req, res) => {
     if (!updatedProduct) {
       return res.status(404).json({ message: "Product not found or update failed." });
   }
+  await publishEvent(ProductUpdated,{
+    productId: updates.productId,
+    name:      updates.name,
+    price:     updates.price,
+    amount:    updates.amount,
+    timestamp: Date.now()
+
+  });
+
   res.json({ message: "Product updated successfully", Product: updatedProduct });
   }
     catch (error) {
@@ -112,8 +130,12 @@ export const deletedProduct = asyncHandler(async (req, res) => {
         return res.status(404).json({ message: "Product not found or already deleted." });
          }
     // ✅ Remove product from `myProducts`
-        await User.findOneAndUpdate({ userId: callerId}, { $pull: { myProducts: id } });
-            res.status(200).json({ success: true, message: "Product deleted successfully.", product : deletedProduct });        
+        // await User.findOneAndUpdate({ userId: callerId}, { $pull: { myProducts: id } });
+        //     res.status(200).json({ success: true, message: "Product deleted successfully.", product : deletedProduct });      
+ await publishEvent(ProductRemoved,{
+   productId: deletedProduct.productId,
+   timestamp: Date.now()
+ });       
   } catch (error) {
         return res.status(401).json({
             success: false,
