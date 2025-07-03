@@ -94,8 +94,7 @@ export const updateProduct = asyncHandler(async (req, res) => {
     name:      updates.name,
     price:     updates.price,
     amount:    updates.amount,
-    timestamp: Date.now()
-
+    timestamp: new Date(),
   });
 
   res.json({ message: "Product updated successfully", Product: updatedProduct });
@@ -134,7 +133,7 @@ export const deletedProduct = asyncHandler(async (req, res) => {
         //     res.status(200).json({ success: true, message: "Product deleted successfully.", product : deletedProduct });      
  await publishEvent(ProductRemoved,{
    productId: deletedProduct.productId,
-   timestamp: Date.now()
+   timestamp: new Date(),
  });       
   } catch (error) {
         return res.status(401).json({

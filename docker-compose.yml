@@ -94,6 +94,15 @@ services:
       - "3005:3005"
     networks:
       - microservices-network
+  order-service:
+    build:
+      context: ./order
+      dockerfile: Dockerfile
+    container_name: order-service
+    ports:
+      - "3007:3007"
+    networks:
+      - microservices-network
   cart-service:
     build:
       context: ./cart

@@ -2,6 +2,8 @@
 import { Kafka } from 'kafkajs';
 import dotenv from 'dotenv';
 import PaymentService from '../services/paymentService.js';
+import OrderInfo from '../models/orderInfo.js'
+import { v4 as uuidv4 } from "uuid";
 dotenv.config();
 
 const kafka = new Kafka({
@@ -14,18 +16,30 @@ const consumer = kafka.consumer({ groupId: 'payment-group' });
 export async function initConsumer() {
   await consumer.connect();
   await consumer.subscribe({ topic: 'shipment.returned', fromBeginning: false });
-  console.log('Payment consumer subscribed to shipment.returned');
+  await consumer.subscribe({ topic: 'CartCheckout' });
 
   await consumer.run({
     eachMessage: async ({ message }) => {
       const event = JSON.parse(message.value.toString());
       console.log('Payment ← got shipment.returned', event);
+      if (topic === 'shipment.returned'){
       try {
         await PaymentService.refundPayment(event);
         console.log('Refund processed for order', event.orderId);
       } catch (err) {
         console.error('Refund failed for order', event.orderId, err);
+      };}
+      if (topic === 'CartCheckout'){
+             await OrderInfo.create({
+               orderId:     uuidv4(),
+               userId:      payload.userId,
+               products:    payload.products,
+               totalAmount: payload.totalAmount,
+               status:      payload.status,
+
+             });
       }
+
     },
   });
 }

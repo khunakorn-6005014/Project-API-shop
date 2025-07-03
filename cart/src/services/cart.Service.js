@@ -1,7 +1,8 @@
 import { v4 as uuidv4 } from "uuid";
 import Cart from '../models/cart.js';
-import Product from '../models/product.js'
+import Product from '../models/productInfo.js'
 import Order from '../models/order.js';
+import {publishEvent} from '../mq/producer.js'
 
 class CartService {
   // Retrieve or create a cart for the user
@@ -78,22 +79,25 @@ static async checkout(userId) {
       throw new Error("Cart is empty. Cannot proceed with checkout.");
     }
     // Create order based on cart contents
-    const order = await Order.create({
-      orderId: uuidv4(),
-      userId,
-      products: cart.items,     // directly using cart items
-      totalAmount: cart.totalAmount,
-      status: "pending"
-    });
-
-    console.log(`Order ${order.orderId} created for user ${userId}`);
-
+    // const order = await Order.create({
+    //   orderId: uuidv4(),
+    //   userId,
+    //   products: cart.items,     // directly using cart items
+    //   totalAmount: cart.totalAmount,
+    //   status: "pending"
+    // });
+    await publishEvent("CartCheckout",{
+        userId,
+        products: cart.items, 
+        totalAmount: cart.totalAmount,
+        status: "pending"
+    })
     // Clear the cart after successful checkout
     cart.items = [];
     cart.totalAmount = 0;
     await cart.save();
 
-    return order;
+    //return order;
   }
 }
 export default CartService;

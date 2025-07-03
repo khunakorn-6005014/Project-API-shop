@@ -1,6 +1,6 @@
 // APIproject/payment/services/paymentService.js
 import { v4 as uuidv4 } from "uuid";
-import Order from "../models/order.js";
+import Order from "../models/orderInfo.js";
 import Payment from "../models/payment.js";
 import { publishEvent } from "../mq/producer.js";
 
