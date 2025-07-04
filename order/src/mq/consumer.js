@@ -15,6 +15,16 @@ export async function initConsumer() {
 await consumer.connect();
 await consumer.subscribe({ topic: 'CartCheckout' });
 await consumer.subscribe({ topic: 'payment.completed' });
+await consumer.subscribe({ topic: 'shipment.delivered' });
+await consumer.subscribe({ topic: 'awaiting.shipment' });
+await consumer.subscribe({ topic: 'completed.shipment' });
+await consumer.subscribe({ topic: 'payment.refunded' });
+await consumer.subscribe({ topic: 'shipment.returned' });
+//shipment.returned
+//payment.refunded
+//completed.shipment
+//awaiting.shipment
+//shipment.delivered
 await consumer.run({
   eachMessage: async ({ topic, message }) => {
     const payload = JSON.parse(message.value.toString());
@@ -46,6 +56,51 @@ await consumer.run({
       await Order.findOneAndUpdate(
         { orderId: payload.orderId },
         { status: 'paid'
+            // ,  paidAt: new Date(payload.timestamp) 
+        }
+      );
+    }
+    if (topic === 'shipment.delivered') {
+      // 2) update that Order to “delivered”
+      await Order.findOneAndUpdate(
+        { orderId: payload.orderId },
+        { status: payload.status
+            // ,  paidAt: new Date(payload.timestamp) 
+        }
+      );
+    } 
+    if (topic === 'awaiting.shipment') {
+      // 2) update that Order to “awaing shippng”
+      await Order.findOneAndUpdate(
+        { orderId: payload.orderId },
+        { status: payload.status
+            // ,  paidAt: new Date(payload.timestamp) 
+        }
+      );
+    } 
+    if (topic === 'completed.shipment') {
+      // 2) update that Order to “completed”
+      await Order.findOneAndUpdate(
+        { orderId: payload.orderId },
+        { status: payload.status
+            // ,  paidAt: new Date(payload.timestamp) 
+        }
+      );
+    } 
+    if (topic === 'payment.refunded') {
+      // 2) update that Order to “refunded”
+      await Order.findOneAndUpdate(
+        { orderId: payload.orderId },
+        { status: payload.status
+            // ,  paidAt: new Date(payload.timestamp) 
+        }
+      );
+    }
+    if (topic === 'shipment.returned') {
+      // 2) update that Order to “paid”
+      await Order.findOneAndUpdate(
+        { orderId: payload.orderId },
+        { status: payload.status
             // ,  paidAt: new Date(payload.timestamp) 
         }
       );

@@ -38,7 +38,14 @@ function buildPayload(topic, evt) {
       };
     case "refund.processed":
       return {
-        title: "Refund Issued",
+        title: "Refund Issued from shipping",
+        message: `A refund of $${evt.refundAmount} for order ${evt.orderId} was processed.`,
+        type: "refund",
+        userId: evt.userId
+      };
+      case "payment.refunded":
+      return {
+        title: "Refund Issued from paymant",
         message: `A refund of $${evt.refundAmount} for order ${evt.orderId} was processed.`,
         type: "refund",
         userId: evt.userId

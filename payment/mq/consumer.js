@@ -3,6 +3,8 @@ import { Kafka } from 'kafkajs';
 import dotenv from 'dotenv';
 import PaymentService from '../services/paymentService.js';
 import OrderInfo from '../models/orderInfo.js'
+import orderInfo from '../models/orderInfo.js';
+//import order from '../../order/src/models/order.js';
 dotenv.config();
 
 const kafka = new Kafka({
@@ -24,6 +26,11 @@ export async function initConsumer() {
       if (topic === 'shipment.returned'){
       try {
         console.log('Payment ← got shipment.returned', event);
+        await orderInfo.findOneAndUpdate(
+           { orderId: payload.orderId },
+            { status: 'returned'}
+            // ,  paidAt: new Date(payload.timestamp) 
+        )
         await PaymentService.refundPayment(event);
         console.log('Refund processed for order', event.orderId);
       } catch (err) {

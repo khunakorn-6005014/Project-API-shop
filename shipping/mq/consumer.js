@@ -16,13 +16,18 @@ export async function initConsumer() {
 
   await consumer.connect();
   await consumer.subscribe({ topic: 'payment.completed', fromBeginning: false });
-  console.log('Shipping consumer subscribed to payment.completed');
   await consumer.subscribe({ topic: 'orderCreated' });
 await consumer.run({
     eachMessage: async ({ message }) => {
       const event = JSON.parse(message.value.toString());
-       if (topic === 'shipment.returned'){
-      try {console.log('Shipping ← got payment.completed', event);
+       if (topic === 'payment.completed'){
+      try {
+        await Order.findOneAndUpdate(
+                { orderId: event.orderId },
+                { status: 'paid'}
+              );
+        console.log('Shipping ← got payment.completed', event);
+
         } catch (err) {
           console.error('Shipment creation failed for order', event.orderId, err);
        };

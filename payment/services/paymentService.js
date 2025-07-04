@@ -56,7 +56,7 @@ class PaymentService {
     }
     if (order.totalAmount !== refundAmount) {
       throw new Error("Refund amount does not match order total.");
-    }
+    }    
     const refund = await Payment.create({
       paymentId: uuidv4(),
       orderId,
@@ -69,7 +69,14 @@ class PaymentService {
      // If the order has not already been marked as "returned", then update it
   // Otherwise, leave the order status as is (i.e., still "returned")
   if (order.status !== "returned") {
-    await Order.findOneAndUpdate({ orderId }, { status: "refunded" });
+    //await Order.findOneAndUpdate({ orderId }, { status: "refunded" });
+    await publishEvent("payment.refunded", {
+            orderId,
+            userId,
+            refundAmount,
+            status: "refunded",
+            timestamp: new Date(),
+          });
   }
      // Publish refund processed event:
   await publishEvent("refund.processed", {
