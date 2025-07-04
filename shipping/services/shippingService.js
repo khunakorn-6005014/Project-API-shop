@@ -1,7 +1,7 @@
 // APIproject/shipping/services/shippingService.js
 import { v4 as uuidv4 } from "uuid";
 import Shipping from "../models/shipping.js";
-import Order from "../models/order.js";
+import Order from "../models/orderData.js";
 import { updateProductStock } from "../utils/updateProductStock.js";
 import { publishShippingEvent as publishEvent } from "../mq/producer.js";  // ← correct path
 
@@ -51,7 +51,7 @@ class ShippingService {
     });
      console.log(" the shipping details:", shipment);
     // Update order status to reflect shipment initiation.
-    await Order.findOneAndUpdate({ orderId }, { status: "awaiting shipment" });
+    await Order.findOneAndUpdate({ orderId }, { status: "awaiting shipment" })  
 
     return shipment;
   }

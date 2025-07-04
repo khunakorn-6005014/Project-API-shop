@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const OrderSchema = new mongoose.Schema({
+const OrderDataSchema = new mongoose.Schema({
     orderId: { type: String, required: true, unique: true }, // Use UUID for flexibility
     userId: { type: String, ref: "User" }, // Who placed the order
     products: [{ 
@@ -21,9 +21,6 @@ const OrderSchema = new mongoose.Schema({
     ]
 , default: "pending" },
     totalAmount: { type: Number, required: true }, // Final total price
-    paymentId: { type: String, ref: "Payment" }, // Link to payment details
-    shippingId: { type: String, ref: "Shipping" }, // Link to shipping details
-    notificationId: { type: String, ref: "Notification" }, // Link to user notifications
 }, { timestamps: true });
 
-export default mongoose.model("Order", OrderSchema);
+export default mongoose.model("OrderData", OrderDataSchema);

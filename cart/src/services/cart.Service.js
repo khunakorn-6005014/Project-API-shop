@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 import Cart from '../models/cart.js';
 import Product from '../models/productInfo.js'
-import Order from '../models/order.js';
+//import Order from '../models/order.js';
 import {publishEvent} from '../mq/producer.js'
 
 class CartService {
