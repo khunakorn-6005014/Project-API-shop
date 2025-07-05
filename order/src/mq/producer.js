@@ -1,10 +1,11 @@
 import { Kafka } from 'kafkajs';
 import dotenv from 'dotenv';
 dotenv.config();
-const Kafka = new Kafka({
+const kafka = new Kafka({
   clientId: "order-service",
   brokers: [process.env.KAFKA_BROKER || 'kafka:9092'], // Adjust broker addresses accordingly
 });
+const producer = kafka.producer();
 export async function connectProducer() {
     try {
     await producer.connect();// Connect when the container starts

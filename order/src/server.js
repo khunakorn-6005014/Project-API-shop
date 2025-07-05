@@ -1,10 +1,10 @@
 import app from './app.js';
 import config from 'config';
-import {shutdownConsumer,startConsumer} from './mq/consumer.js';
+import {shutdownConsumer,initConsumer} from './mq/consumer.js';
 import {connectProducer,shutdownProducer} from './mq/producer.js'
 
 await connectProducer();
-await startConsumer();
+await initConsumer();
 
 
 const port = config.get('server.port') || 3007;

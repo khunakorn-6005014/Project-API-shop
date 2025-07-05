@@ -16,5 +16,5 @@ const app = express();
 app.use(express.json());
 
 app.use(cors());
-app.use('/'.orderRoutes)
+app.use('/',orderRoutes)
 export default app;
