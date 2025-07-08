@@ -17,6 +17,7 @@ const app = express();
 app.use(express.json());
 app.use(cors())
 // Public endpoints
+
 app.use('/auth', authRoutes);
 app.use('/', jwksRoutes);
 

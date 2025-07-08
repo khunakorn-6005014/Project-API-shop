@@ -8,17 +8,27 @@ import Product from "../models/product.js";
  *///The JSDoc @param tags in the comments are purely for documentation
 export const updateProductStock = async (productId, quantity, operation) => {
   if (operation === "decrement") {
-    return await Product.findOneAndUpdate(
-      { productId },
-      { $inc: { amount: -quantity } },
-      { new: true }
-    );
+    // return await Product.findOneAndUpdate(
+    //   { productId },
+    //   { $inc: { amount: -quantity } },
+    //   { new: true }
+    // );
+     await publishEvent("decrement.product",{
+            productId,
+            quantity,
+            timestamp: new Date(),
+         });
   } else if (operation === "increment") {
-    return await Product.findOneAndUpdate(
-      { productId },
-      { $inc: { amount: quantity } },
-      { new: true }
-    );
+    // return await Product.findOneAndUpdate(
+    //   { productId },
+    //   { $inc: { amount: quantity } },
+    //   { new: true }
+    // );
+    await publishEvent("increment.product",{
+            productId,
+            quantity,
+            timestamp: new Date(),
+         });
   } else {
     throw new Error("Invalid operation provided. Use 'decrement' or 'increment'.");
   }
