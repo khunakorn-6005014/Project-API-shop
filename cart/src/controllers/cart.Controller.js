@@ -60,8 +60,8 @@ export const viewCart = asyncHandler(async (req, res) => {
 export const checkoutCart = asyncHandler(async (req, res) => {
    try{
   //const { userId } = req.userData;
-  const { userId } = req.headers['x-user-id'] || '';
-  console.log(`User ${userId} is checking out`);
+  const userId = req.headers['x-user-id'] || '';
+  console.log(`User is checking out :`,userId);
   if (!userId) {
     return res.status(401).json({ message: 'Authentication required.' });
   }

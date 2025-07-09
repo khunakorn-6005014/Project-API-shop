@@ -41,7 +41,7 @@ await consumer.run({
         // createdAt: new Date(payload.timestamp)
       });
       console.log(`Order ${NewOrder.orderId} created for user ${NewOrder.userId}`);
-       await publishEvent(orderCreated,{
+       await publishEvent("orderCreated",{ // send to shipping and payment to create their own order model
            orderId: NewOrder.orderId,
            userId: NewOrder.userId,
            products: NewOrder.products,

@@ -18,11 +18,11 @@ export async function initConsumer() {
   await consumer.subscribe({ topic: 'payment.completed', fromBeginning: false });
   await consumer.subscribe({ topic: 'orderCreated' });
 await consumer.run({
-    eachMessage: async ({ message }) => {
+    eachMessage: async ({  topic,message }) => {
       const event = JSON.parse(message.value.toString());
        if (topic === 'payment.completed'){
       try {
-        await Order.findOneAndUpdate(
+        await orderData.findOneAndUpdate(
                 { orderId: event.orderId },
                 { status: 'paid'}
               );

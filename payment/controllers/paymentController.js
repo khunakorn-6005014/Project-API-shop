@@ -29,7 +29,7 @@ export const processPayment = asyncHandler(async (req, res) => {
         paymentMethod,
         status: "failed",   
       });// Optionally, capture the error message/details
-      await Order.findOneAndUpdate({ orderId }, { status: "payment_failed" });
+      //await Order.findOneAndUpdate({ orderId }, { status: "payment_failed" });
           // Send an appropriate error response without throwing another error
     return res.status(500).json({
         success: false, 

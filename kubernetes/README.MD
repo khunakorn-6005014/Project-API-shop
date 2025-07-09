@@ -3,8 +3,8 @@
 ## Kind (Kubernetes IN Docker)
  is an excellent option for running Kubernetes locally inside Docker.
 # Create a Kind Cluster
-
-# To delete the Kind cluster:
+kind create cluster --name my-cluster
+# To delete the Kind cluster later:
 kind delete cluster --name my-cluster
 ## Deploy to Kubernetes: manifests inside Kind
 -kubectl apply -f APIproject/kubernetes/payment-deployment.yaml

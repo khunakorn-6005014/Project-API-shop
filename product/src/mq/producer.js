@@ -1,4 +1,4 @@
-// src/mq/producer.js
+// src/product/src/mq/producer.js
 import { Kafka } from 'kafkajs';
 import dotenv from 'dotenv';
 dotenv.config();

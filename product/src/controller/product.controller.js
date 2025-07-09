@@ -47,7 +47,7 @@ export const createProduct = asyncHandler(async (req, res) => {
   // Optionally push into user.myProducts
   // user.myProducts.push(newProduct.productId);
   // await user.save();
-await publishEvent(ProductCreated,{
+await publishEvent("ProductCreated",{
     productId: newProduct.productId,
     name: newProduct.name,
     price: newProduct.price,
@@ -89,11 +89,11 @@ export const updateProduct = asyncHandler(async (req, res) => {
     if (!updatedProduct) {
       return res.status(404).json({ message: "Product not found or update failed." });
   }
-  await publishEvent(ProductUpdated,{
-    productId: updates.productId,
-    name:      updates.name,
-    price:     updates.price,
-    amount:    updates.amount,
+  await publishEvent("ProductUpdated",{
+    productId: updatedProduct.productId,
+    name:      updatedProduct.name,
+    price:     updatedProduct.price,
+    amount:    updatedProduct.amount,
     timestamp: new Date(),
   });
 
@@ -131,7 +131,7 @@ export const deletedProduct = asyncHandler(async (req, res) => {
     // ✅ Remove product from `myProducts`
         // await User.findOneAndUpdate({ userId: callerId}, { $pull: { myProducts: id } });
         //     res.status(200).json({ success: true, message: "Product deleted successfully.", product : deletedProduct });      
- await publishEvent(ProductRemoved,{
+ await publishEvent("ProductRemoved",{
    productId: deletedProduct.productId,
    timestamp: new Date(),
  });       

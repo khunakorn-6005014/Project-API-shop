@@ -13,7 +13,7 @@ export async function initConsumer() {
 
   await consumer.connect();
   await consumer.subscribe({ topic: 'decrement.product', fromBeginning: false });
-    await consumer.subscribe({ topic: 'increment.product', fromBeginning: false });
+  await consumer.subscribe({ topic: 'increment.product', fromBeginning: false });
 await consumer.run({
     eachMessage: async ({ message }) => {
       const event = JSON.parse(message.value.toString());

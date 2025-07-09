@@ -1,4 +1,5 @@
-import Product from "../models/product.js";
+//import Product from "../models/product.js";
+import {publishShippingEvent as publishEvent } from "../mq/producer.js";  // ← correct path
 /**
  * Updates a product's stock.
  * @param {String} productId - The ID of the product.

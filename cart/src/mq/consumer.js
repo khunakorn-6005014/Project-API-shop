@@ -14,6 +14,8 @@ export async function startConsumer() {
   await consumer.subscribe({ topic: 'ProductCreated' });
   await consumer.subscribe({ topic: 'ProductUpdated' });
   await consumer.subscribe({ topic: 'ProductRemoved' });
+  await consumer.subscribe({ topic: 'decrement.product', fromBeginning: false });
+  await consumer.subscribe({ topic: 'increment.product', fromBeginning: false });
 
   await consumer.run({
     eachMessage: async ({ topic, message }) => {
@@ -35,6 +37,20 @@ export async function startConsumer() {
       if (topic === 'ProductRemoved') {
         await ProductInfo.deleteOne({ productId: data.productId });
       }
+       if (topic === 'increment.product'){
+              await ProductInfo.findOneAndUpdate(
+                { productId: data.productId },
+                { $inc: { amount: data.quantity } },
+                 { new: true }
+          );
+          }
+        if (topic === 'decrement.product'){
+              await ProductInfo.findOneAndUpdate(
+                { productId: data.productId },
+                { $inc: { amount: -data.quantity } },
+                 { new: true }
+          ); 
+          }
     }
   });
 }
