@@ -15,7 +15,7 @@ export async function initConsumer() {
   await consumer.subscribe({ topic: 'decrement.product', fromBeginning: false });
   await consumer.subscribe({ topic: 'increment.product', fromBeginning: false });
 await consumer.run({
-    eachMessage: async ({ message }) => {
+    eachMessage: async ({ topic,message }) => {
       const event = JSON.parse(message.value.toString());
        if (topic === 'increment.product'){
         await Product.findOneAndUpdate(

@@ -72,6 +72,7 @@ services:
       - user-service
       - product-service
       - cart-service
+      - order-service
     networks:
       - microservices-network
   user-service:
