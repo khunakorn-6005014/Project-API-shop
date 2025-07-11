@@ -1,10 +1,11 @@
 ## E-Commerce REST API Server Project  (progessing)
 
 ## Introduction
-This project is a hands-on microservices workshop where we build a scalable e-commerce backend. I have develope independent services for user management, product catalog, cart, orders, payments, shipping, notifications, authentication, and API gateway. Everything runs in Docker and Kubernetes to simulate a real-world production environment.
+This project is a hands-on microservices workshop where we pratice building a scalable e-commerce backend. I have develope independent services for user management, product catalog, cart, orders, payments, shipping, notifications, authentication, and API gateway. Everything runs in Docker and Kubernetes to simulate a real-world production environment.
 
 ## Goals
 - Gain confidence in server-side development with Node.js and Express
+- Improve Javascript skill
 - Design and implement RESTful APIs
 - Secure services with JWT-based authentication and role-based authorization
 - Work with MongoDB in a microservice architecture
