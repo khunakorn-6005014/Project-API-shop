@@ -1,7 +1,7 @@
-## E-Commerce REST API Server Project  
+## E-Commerce REST API Server Project  (progessing)
 
 ## Introduction
-This project is a hands-on microservices workshop where we build a scalable e-commerce backend. You’ll develop independent services for user management, product catalog, cart, orders, payments, shipping, notifications, authentication, and API gateway. Everything runs in Docker and Kubernetes to simulate a real-world production environment.
+This project is a hands-on microservices workshop where we build a scalable e-commerce backend. I have develope independent services for user management, product catalog, cart, orders, payments, shipping, notifications, authentication, and API gateway. Everything runs in Docker and Kubernetes to simulate a real-world production environment.
 
 ## Goals
 - Gain confidence in server-side development with Node.js and Express
@@ -37,6 +37,7 @@ This project is a hands-on microservices workshop where we build a scalable e-co
 - Kind (Kubernetes in Docker) for orchestration
 - Prometheus, Alertmanager, Grafana for monitoring
 - Postman / Insomnia for API testing
+- 
 
 ##   Service Overview
 | Service          | Responsibility |
@@ -69,6 +70,14 @@ Kafka topics coordinate work across services in an asynchronous, decoupled fashi
    # Order Completion & Inventory
 • userAcceptProduct → OrderService marks completed, ProductService decrements stock via decrement.product event
 
+## future goal
+- Write unit and integration tests (Jest ,Supertest, Testcontainers)
+- Automate CI/CD
+- Harden security with network policies, secret management
+- Extend features: order analytics, recommendations
+
+
+
 -------------------------------------------------
 ##  Docker Compose simplifies multi-container setups by defining services, 
 
@@ -88,3 +97,4 @@ http://localhost:9090/targets
 ## Kubernetes (Kind) Deployment
   kind create cluster --name my-cluster
 - kubectl apply -f kubernetes/
+
