@@ -1,4 +1,4 @@
-## E-Commerce REST API Server Project  (progessing)
+## E-Commerce REST API Server Project  (progressing)
 
 ## Introduction
 This project is my hands-on microservices workshop where i practice building a scalable e-commerce backend. I have develope independent services for user management, product catalog, cart, orders, payments, shipping, notifications, authentication, and API gateway. Everything runs in Docker and Kubernetes to simulate a real-world production environment.
