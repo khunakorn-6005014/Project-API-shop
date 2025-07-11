@@ -1,6 +1,6 @@
 // APIproject/payment/services/paymentService.js
 import { v4 as uuidv4 } from "uuid";
-import Order from "../order/model/order.js";
+import Order from "../models/orderInfo.js";
 import Payment from "../models/payment.js";
 import { publishEvent } from "../mq/producer.js";
 
@@ -56,7 +56,7 @@ class PaymentService {
     }
     if (order.totalAmount !== refundAmount) {
       throw new Error("Refund amount does not match order total.");
-    }
+    }    
     const refund = await Payment.create({
       paymentId: uuidv4(),
       orderId,
@@ -69,7 +69,14 @@ class PaymentService {
      // If the order has not already been marked as "returned", then update it
   // Otherwise, leave the order status as is (i.e., still "returned")
   if (order.status !== "returned") {
-    await Order.findOneAndUpdate({ orderId }, { status: "refunded" });
+    //await Order.findOneAndUpdate({ orderId }, { status: "refunded" });
+    await publishEvent("payment.refunded", {
+            orderId,
+            userId,
+            refundAmount,
+            status: "refunded",
+            timestamp: new Date(),
+          });
   }
      // Publish refund processed event:
   await publishEvent("refund.processed", {

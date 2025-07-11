@@ -2,11 +2,34 @@
 import asyncHandler from "express-async-handler";
 import ShippingService from "../services/shippingService.js";
 
+function getCaller(req) {
+  const callerId = req.headers['x-user-id'] || '';
+  // split and remove empty entries
+  const raw = req.headers['x-user-roles'] || '';
+  const roles = raw
+    .split(',')
+    .map(r => r.trim())
+    .filter(Boolean);
+  console.log('callerId is', callerId);
+  console.log('roles is', roles);
+  return { callerId, roles };
+}
 // Endpoint to create a shipment with a provided address
 export const createShipment = asyncHandler(async (req, res) => {
 try{
   // userId is attached by your verifyToken middleware
-  const userId = req.userData.userId;
+  const { callerId, roles } = getCaller(req);
+  const elevated = ['admin','editor','moderator'];
+  console.log("callerId in updating is", callerId)
+  console.log("roles is", roles)
+  if (!callerId) {
+    return res.status(401).json({ message: 'Authentication required.' });
+  }
+   const isElevated = roles.some(r => elevated.includes(r));
+  if (!isElevated) {
+            return res.status(403).json({ message: "only admin, editor and moderator can" });
+        }
+  const userId = callerId;   
   const { orderId, address ,carrier} = req.body;
   console.log("User Data in shippingCreate:", userId);
   // Validate that address contains the required fields (optional)
@@ -25,7 +48,18 @@ try{
 
 export const updateShipmentStatus = asyncHandler(async (req, res) => {
 try{  
-  const userId = req.userData.userId; // or use admin authentication
+  const { callerId, roles } = getCaller(req);
+  const elevated = ['admin','editor','moderator'];
+  console.log("callerId in updating is", callerId)
+  console.log("roles is", roles)
+  if (!callerId) {
+    return res.status(401).json({ message: 'Authentication required.' });
+  }
+   const isElevated = roles.some(r => elevated.includes(r));
+  if (!isElevated) {
+            return res.status(403).json({ message: "only admin, editor and moderator can" });
+        }
+  const userId = callerId;
   const { orderId, newStatus } = req.body;
     console.log("User Data in updatedShipping:", userId);
     
@@ -40,7 +74,7 @@ try{
 
 export const userAcceptance = asyncHandler(async (req, res) => {
   try {
-    const userId = req.userData.userId;
+    const userId = req.headers['x-user-id'] || '';
     const { orderId, decision } = req.body;
     console.log("User Data in userAccept:", userId);
     const result = await ShippingService.handleUserDecision({ orderId, userId, decision });

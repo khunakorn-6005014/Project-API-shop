@@ -50,7 +50,7 @@ app.get('/metrics', async (req, res) => {
 
 // ----------------------
 
-app.use("/notifications", notificationRoutes);
+app.use('/', notificationRoutes);
 
 app.listen(PORT, () =>
   console.log(`Notifications Service running on port ${PORT}`)

@@ -44,10 +44,102 @@ services:
       test: ["CMD", "bash", "-c", "echo > /dev/tcp/localhost/9092"]
       interval: 10s
       retries: 10
+  auth-service:
+    build:
+      context: ./auth-service
+      dockerfile: Dockerfile
+    container_name: auth-service
+    env_file:
+      - .env
+    ports:
+      - "3000:3000"    # The auth service will listen on port 3000 inside the container.
+    networks:
+      - microservices-network
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    container_name: api-gateway
+    env_file:
+      - .env
+    ports:
+      - "443:443"      # API Gateway listens on HTTPS port 443.
+    depends_on:
+      - auth-service
+      - payment-service
+      - shipping-service
+      - notifications-service
+      - user-service
+      - product-service
+      - cart-service
+      - order-service
+    networks:
+      - microservices-network
+  user-service:
+    build:
+      context: ./users
+      dockerfile: Dockerfile
+    container_name: user-service
+    env_file:
+      - .env
+    depends_on:
+     - kafka
+    environment:
+     - KAFKA_BROKER=kafka:9092
+    ports:
+      - "3004:3004"
+    networks:
+      - microservices-network
+  product-service:
+    build:
+      context: ./product
+      dockerfile: Dockerfile
+    container_name: product-service
+    env_file:
+      - .env
+    depends_on:
+     - kafka
+    ports:
+      - "3005:3005"
+    environment:
+     - KAFKA_BROKER=kafka:9092
+    networks:
+      - microservices-network
+  order-service:
+    build:
+      context: ./order
+      dockerfile: Dockerfile
+    container_name: order-service
+    env_file:
+      - .env
+    depends_on:
+     - kafka
+    environment:
+     - KAFKA_BROKER=kafka:9092
+    ports:
+      - "3007:3007"
+    networks:
+      - microservices-network
+  cart-service:
+    build:
+      context: ./cart
+      dockerfile: Dockerfile
+    container_name: cart-service
+    env_file:
+      - .env
+    depends_on:
+     - kafka
+    environment:
+     - KAFKA_BROKER=kafka:9092
+    ports:
+      - "3006:3006"
+    networks:
+      - microservices-network
+
   payment-service:
     build:
-      context: .
-      dockerfile: ./payment/Dockerfile
+      context: ./payment
+      dockerfile: Dockerfile
     container_name: payment-service
     env_file:
       - .env
@@ -59,11 +151,11 @@ services:
       - "3001:3001"
     networks:
       - microservices-network
-
+  
   shipping-service:
     build:
-      context: .
-      dockerfile: ./shipping/Dockerfile
+      context: ./shipping
+      dockerfile: Dockerfile
     container_name: shipping-service
     env_file:
      - .env
@@ -78,8 +170,8 @@ services:
 
   notifications-service:
     build:
-      context: .   
-      dockerfile: notification/Dockerfile
+      context: ./notification   
+      dockerfile: Dockerfile
     container_name: notifications-service
     env_file:
      - .env

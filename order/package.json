@@ -1,0 +1,24 @@
+{
+  "name": "order",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/server.js"
+  },
+  "dependencies": {
+    "config": "^4.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.0.1",
+    "express": "^5.1.0",
+    "express-async-handler": "^1.2.0",
+    "kafkajs": "^2.2.4",
+    "mongoose": "^8.16.1",
+    "prom-client": "^15.1.3",
+    "uuid": "^11.1.0"
+  }
+}

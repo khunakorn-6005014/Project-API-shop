@@ -18,3 +18,7 @@ scrape_configs:
           - 'shipping-service:3002'
           - 'payment-service:3001'
           - 'notifications-service:3003'
+          - 'user-service:3004'
+          - 'product-service:3005'
+          - 'cart-service:3006'
+          - 'order-service:3007'

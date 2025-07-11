@@ -1,6 +1,5 @@
 // APIproject/product/utils/updateProductStock.js
 import Product from "../models/product.js";
-
 /**
  * Updates a product's stock.
  * @param {String} productId - The ID of the product.

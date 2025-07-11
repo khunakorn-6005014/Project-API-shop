@@ -1,8 +1,8 @@
 // APIproject/shipping/services/shippingService.js
 import { v4 as uuidv4 } from "uuid";
 import Shipping from "../models/shipping.js";
-import Order from "../order/model/order.js";
-import { updateProductStock } from "../product/utils/updateProductStock.js";
+import Order from "../models/orderData.js";
+import { updateProductStock } from "../utils/updateProductStock.js";
 import { publishShippingEvent as publishEvent } from "../mq/producer.js";  // ← correct path
 
 // Helper function to wrap a promise with a timeout
@@ -37,7 +37,7 @@ class ShippingService {
          if (order.userId !== userId) {
            throw new Error("Order does not belong to this user.");
          }
-
+   
     const trackingNumber = uuidv4().slice(0, 12); // Simulated tracking number
     const shipment = await Shipping.create({
       shipmentId: uuidv4(),
@@ -50,9 +50,14 @@ class ShippingService {
       expectedDeliveryDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000), // 5 days from now.
     });
      console.log(" the shipping details:", shipment);
-    // Update order status to reflect shipment initiation.
-    await Order.findOneAndUpdate({ orderId }, { status: "awaiting shipment" });
-
+  // Update order status to reflect shipment initiation.
+       //await Order.findOneAndUpdate({ orderId }, { status: "awaiting shipment" })  ;
+    await publishEvent("awaiting.shipment",{
+       orderId,
+       userId,
+       status: "awaiting shipment",
+       timestamp: new Date(),
+    });
     return shipment;
   }
    // updated a shipment for the given order and user
@@ -119,7 +124,14 @@ class ShippingService {
     }
 
     if (decision === "accept") {
-      await Order.findOneAndUpdate({ orderId }, { status: "completed" });
+      //await Order.findOneAndUpdate({ orderId }, { status: "completed" });
+      console.log("user accept product")
+      await publishEvent("completed.shipment",{
+       orderId,
+       userId,
+       status: "completed",
+       timestamp: new Date(),
+    });
       // Decrement inventory permanently.
        for (const productItem of order.products) {
         await updateProductStock(productItem.productId, productItem.quantity, "decrement");
@@ -130,6 +142,7 @@ class ShippingService {
       await publishEvent("shipment.returned", {
         orderId,
         userId,
+        status: "returned",
         refundAmount: order.totalAmount,
         timestamp: new Date(),
       });

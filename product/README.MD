@@ -1,7 +1,6 @@
 Manage flat
 
 ## Rest API
-
 Method      | URI                           | Description                           |permissions         |
 ----------- | ----------------------------- | ------------------------------------- |--------------------|     
 `POST`      | /new-product              | Create new account                    |                    |
