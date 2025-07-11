@@ -58,20 +58,20 @@ This project is a hands-on microservices workshop where we build a scalable e-co
 
 ## Event-Driven Architecture
 Kafka topics coordinate work across services in an asynchronous, decoupled fashion:
-   # Product → User / Cart
+   ### Product → User / Cart
 • ProductCreated, ProductUpdated, ProductRemoved update user’s product lists and cart metadata
-   # Cart → Order
+   ### Cart → Order
 • CartCheckout → OrderService creates a pending order
-   # Order → Payment & Shipping
+   ### Order → Payment & Shipping
 • orderCreated → PaymentService creates payment record, ShippingService schedules shipment
-   # Payment → Order & Notification
+   ### Payment → Order & Notification
 • payment.completed → OrderService marks paid, NotificationService sends confirmation
 • payment.refunded → OrderService marks refunded, NotificationService notifies refund
-   # Shipping → Order & Notification
+   ### Shipping → Order & Notification
 • awaiting.shipment, shipment.delivered, shipment.returned → OrderService updates status, NotificationService alerts
-   # User Return product
+   ### User Return product
 • shipment.returned → triggers refund in PaymentService → emits payment.refunded
-   # Order Completion & Inventory
+   ### Order Completion & Inventory
 • userAcceptProduct → OrderService marks completed, ProductService decrements stock via decrement.product event
 
 ## future goal
@@ -95,7 +95,7 @@ docker-compose -f docker-compose.yml -f docker-compose-metric.yml down --volumes
 ## Grafana 
 http://localhost:4000
 
-## prometheus
+## Prometheus
 http://localhost:9090/targets
 
 ## Kubernetes (Kind) Deployment
