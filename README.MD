@@ -52,6 +52,10 @@ This project is a hands-on microservices workshop where we build a scalable e-co
 | shipping-service | Shipment creation, tracking, returns    | 
 | notifications    | Email/SMS/Push notifications            | 
 
+## Architecture
+
+![Architecture](./architecture.png "Architecture")
+
 ## Event-Driven Architecture
 Kafka topics coordinate work across services in an asynchronous, decoupled fashion:
    # Product → User / Cart
